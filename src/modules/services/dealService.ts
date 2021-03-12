@@ -10,10 +10,14 @@ export default class DealService {
   #dealRepository: DealRepository
 
   constructor() {
+    this.#info(`using db profile ${TYPEORM_ENV}`)
     this.#dealRepository = getConnection(TYPEORM_ENV).getCustomRepository(DealRepository)
   }
 
   #error = (msg: string) => {
+    logger.error(`DealService: ${msg}`)
+  }
+  #info = (msg: string) => {
     logger.error(`DealService: ${msg}`)
   }
 

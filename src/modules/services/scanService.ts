@@ -168,6 +168,7 @@ export default class ScanService {
     for await (const cellX of liquidityAddXReqCollector.collect()) {
       let hash = scriptToHash(scriptSnakeToCamel(cellX.cell_output.lock)).substring(2)
       liquidityAddXReqs.set(hash,cellX)
+      //console.log(`liquidityAddXReqs set map ${hash}`)
     }
     //==
     const liquidityAddYReqCollector = new CellCollector(this.#knex, {
@@ -187,6 +188,7 @@ export default class ScanService {
       }
 
       let cellX = liquidityAddXReqs.get(reqSudtXCellLockHash)
+      liquidityAddXReqs.delete(reqSudtXCellLockHash)
       if(!cellX){
         continue
       }

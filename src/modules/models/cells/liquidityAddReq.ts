@@ -19,7 +19,7 @@ data: - 16 bytes
 type: sudt_x_type - 65 bytes
 lock: - 170 bytes
     code: LIQUIDITY_LOCK_CODE_HASH - 32 bytes + 1 byte
-    args: info_type_hash (32 bytes, 0..32)
+    args: info_type_hash (32 bytes, 0..32) //137 bytes
         | user_lock_hash (32 bytes, 32..64)
         | version (u8, 1 byte, 64..65)
         | sudt_x_min (u128, 16 bytes, 65..81)
@@ -34,7 +34,7 @@ data: - 16 bytes
 type: sudt_y_type - 65 bytes
 lock: - 130 bytes
     code: LIQUIDITY_LOCK_CODE_HASH - 32 bytes + 1 byte
-    args: info_type_hash (32 bytes, 0..32)
+    args: info_type_hash (32 bytes, 0..32) //97 bytes
         | user_lock_hash (32 bytes, 32..64)
         | version (u8, 1 byte, 64..65)
         | req_sudt_x_cell_lock_hash (32 bytes, 65..97)
@@ -124,7 +124,7 @@ export class LiquidityAddReq implements CellInputType {
         let version = args.substring(128, 130)
 
         let sudtXMin = leHexToBigIntUint128(args.substring(130, 162))
-        let sudtYMin = leHexToBigIntUint64(args.substring(162, 194))
+        let sudtYMin = leHexToBigIntUint128(args.substring(162, 194))
 
 
         let tips = leHexToBigIntUint64(args.substring(194, 210))
@@ -193,7 +193,7 @@ export class LiquidityAddReq implements CellInputType {
     static getReqSudtXCellLockHash(cell:Cell) : string|null{
         const args = cell.cell_output.lock.args.substring(2)
 
-        if(args.length != 97){
+        if(args.length != 97*2){
             return null
         }
         return args.substring(130,194)

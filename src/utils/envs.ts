@@ -420,7 +420,10 @@ export const SWAP_BUY_REQ_LOCK_SCRIPT = SWAP_REQ_LOCK_SCRIPT
 SWAP_BUY_REQ_LOCK_SCRIPT.args = SWAP_BUY_REQ_LOCK_ARG
 
 export const SWAP_BUY_REQ_QUERY_OPTION: QueryOptions = {
-  type: 'empty',
+  type: {
+    argsLen: 32,
+    script: scriptCamelToSnake(SUDT_X_TYPE_SCRIPT),
+  },
   lock: {
     argsLen: 105,
     script: scriptCamelToSnake(SWAP_BUY_REQ_LOCK_SCRIPT),
@@ -463,7 +466,7 @@ SWAP_SELL_REQ_LOCK_SCRIPT.args = SWAP_SELL_REQ_LOCK_ARG
 export const SWAP_SELL_REQ_QUERY_OPTION: QueryOptions = {
   type: {
     argsLen: 32,
-    script: scriptCamelToSnake(SWAP_SELL_REQ_TYPE_SCRIPT),
+    script: scriptCamelToSnake(SUDT_Y_TYPE_SCRIPT),
   },
   lock: {
     argsLen: 105,
@@ -483,6 +486,7 @@ export const PW_LOCK_CODE_HASH = process.env.PW_LOCK_CODE_HASH!
 export const PW_LOCK_HASH_TYPE: HashType = process.env.PW_LOCK_HASH_TYPE === 'type' ? 'type' : 'data'
 
 // matcher change, ckb
+export const MATCHER_FROM_BLOCK = process.env.MATCHER_FROM_BLOCK?process.env.MATCHER_FROM_BLOCK:'0x00'
 export const MATCHER_PRIVATE_KEY = process.env.MATCHER_PRIVATE_KEY!
 export const MATCHER_ADDRESS = `0x${blake160(privateKeyToPublicKey(MATCHER_PRIVATE_KEY), 'hex')}`
 log(`Secp256k1 args: MATCHER_PUBLIC_KEY_HASH:${MATCHER_ADDRESS}`)
@@ -499,6 +503,7 @@ export const MATCHER_QUERY_OPTION: QueryOptions = {
     argsLen: 20,
     script: scriptCamelToSnake(MATCHER_LOCK_SCRIPT),
   },
+  fromBlock: MATCHER_FROM_BLOCK,
 }
 
 log('INFO_QUERY_OPTION: ' + JSONbig.stringify(INFO_QUERY_OPTION,null,2))

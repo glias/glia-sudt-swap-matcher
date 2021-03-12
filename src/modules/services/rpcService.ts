@@ -214,8 +214,8 @@ export default class RpcService {
       await this.#client.sendTransaction(rawTx)
       return true
     } catch (e) {
-      this.#error('sendTransaction error: ' + e)
       this.#error('rawTx: '+JSONbig.stringify(rawTx,null,2))
+      this.#error('sendTransaction error: ' + e)
       return false
     }
   }

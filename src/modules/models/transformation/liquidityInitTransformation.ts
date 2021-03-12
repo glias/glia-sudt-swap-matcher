@@ -9,14 +9,16 @@ this res contains 2 cell
 2. change cell which contains remaining ckb or sudt
  */
 /*
-info_in_cell                            info_out_cell
-pool_in_cell                            pool_out_cell
+info_in_cell                              info_out_cell
+pool_x_in_cell                            pool_x_out_cell
+pool_y_in_cell                            pool_y_out_cell
+
                           ------->
-matcher_in_cell(ckb)                    matcher_out_cell(ckb)
+matcher_in_cell(ckb)                      matcher_out_cell(ckb)
 
 
-req_sudt_x_cell             sudt_lp_cell
-req_sudt_y_cell             ckb_change_cell
+req_sudt_x_cell                           sudt_lp_cell
+req_sudt_y_cell                           ckb_change_cell
  */
 export class LiquidityInitTransformation implements Transformation {
 

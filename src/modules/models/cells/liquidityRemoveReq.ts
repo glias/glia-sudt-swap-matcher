@@ -30,7 +30,8 @@ lock: - 170 bytes
 
  */
 export class LiquidityRemoveReq implements CellInputType {
-    static LIQUIDITY_REMOVE_REQUEST_FIXED_CAPACITY = BigInt(259 * 10 ** 8)
+    // you must make sure the cap covers the outputs, which are 2 sudt cells
+    static LIQUIDITY_REMOVE_REQUEST_FIXED_CAPACITY = BigInt(284 * 10 ** 8)
 
     //total capacity the req contains
     capacity: bigint
@@ -101,7 +102,7 @@ export class LiquidityRemoveReq implements CellInputType {
         let version = args.substring(128, 130)
 
         let sudtXMin = leHexToBigIntUint128(args.substring(130, 162))
-        let sudtYMin = leHexToBigIntUint64(args.substring(162, 194))
+        let sudtYMin = leHexToBigIntUint128(args.substring(162, 194))
 
         let tips = leHexToBigIntUint64(args.substring(194, 210))
         let tipsLp = leHexToBigIntUint128(args.substring(210, 242))

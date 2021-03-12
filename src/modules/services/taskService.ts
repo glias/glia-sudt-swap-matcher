@@ -31,7 +31,7 @@ export default class TaskService {
   readonly #matcherService: MatcherService
   readonly #transactionService: TransactionService
 
-  readonly #schedule = '*/5 * * * * *'
+  readonly #schedule = '*/10 * * * * *'
 
   #cronLock: boolean = false
 

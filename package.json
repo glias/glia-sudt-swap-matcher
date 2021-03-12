@@ -7,17 +7,7 @@
     "node": ">=12 <13"
   },
   "scripts": {
-    "start:glia:dev": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./configs/Glia-Ckb.env ts-node src/index",
-    "start:eth:dev": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./configs/ckETH-Ckb.env ts-node src/index",
-    "start:usdc:dev": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./configs/ckUSDC-Ckb.env ts-node src/index",
-    "start:usdt:dev": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./configs/ckUSDT-Ckb.env ts-node src/index",
-    "start:dai:dev": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./configs/ckDAI-Ckb.env ts-node src/index",
-    "start:prod": "cross-env NODE_ENV=production ts-node src/index",
-    "start:glia:prod": "cross-env NODE_ENV=production DOTENV_CONFIG_PATH=./configs/Glia-Ckb.env node lib/index.js",
-    "start:eth:prod": "cross-env NODE_ENV=production DOTENV_CONFIG_PATH=./configs/ckETH-Ckb.env node src/index.js",
-    "start:usdc:prod": "cross-env NODE_ENV=production DOTENV_CONFIG_PATH=./configs/ckUSDC-Ckb.env node src/index.js",
-    "start:usdt:prod": "cross-env NODE_ENV=production DOTENV_CONFIG_PATH=./configs/ckUSDT-Ckb.env node src/index.js",
-    "start:dai:prod": "cross-env NODE_ENV=production DOTENV_CONFIG_PATH=./configs/ckDAI-Ckb.env node src/index.js",
+    "start:ckUSDT:GLIA:dev": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./configs/ckUSDT-GLIA.env ts-node src/index",
     "test": "cross-env DOTENV_CONFIG_PATH=./test.env NODE_ENV=test jest",
     "build:dev": "cross-env NODE_ENV=development yarn run tsc",
     "build:prod": "cross-env NODE_ENV=production yarn run tsc",
