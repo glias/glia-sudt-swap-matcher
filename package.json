@@ -7,7 +7,7 @@
     "node": ">=12 <13"
   },
   "scripts": {
-    "start:ckUSDT:GLIA:dev": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./configs/ckUSDT-GLIA.env ts-node src/index",
+    "start:PenPen:Glia:dev": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./configs/PenPen-Glia.env ts-node src/index",
     "test": "cross-env DOTENV_CONFIG_PATH=./test.env NODE_ENV=test jest",
     "build:dev": "cross-env NODE_ENV=development yarn run tsc",
     "build:prod": "cross-env NODE_ENV=production yarn run tsc",
