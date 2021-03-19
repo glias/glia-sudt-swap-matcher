@@ -373,9 +373,26 @@ export default class MatcherService {
         if(liquidityAddXform.request.capacity - liquidityAddXform.request.tips < liquidityAddXform.minCapacity(changeType)){
             this.#info(liquidityAddXform.request.getOutPoint(),
                 'process liquidity add, txHash: ' + liquidityAddXform.request.outPointX.tx_hash +
-                `liquidityAddXform.request.capacity &{liquidityAddXform.request.capacity} - liquidityAddXform.request.tips ${liquidityAddXform.request.tips} < liquidityAddXform.minCapacity(changeType) ${liquidityAddXform.minCapacity(changeType)}`,
+                `liquidityAddXform.request.capacity ${liquidityAddXform.request.capacity} - liquidityAddXform.request.tips ${liquidityAddXform.request.tips} < liquidityAddXform.minCapacity(changeType) ${liquidityAddXform.minCapacity(changeType)}`,
             )
 
+            liquidityAddXform.skip = true
+            return
+        }
+
+        if( xUsed < liquidityAddXform.request.sudtXMin){
+            this.#info(liquidityAddXform.request.getOutPoint(),
+                'process liquidity add, txHash: ' + liquidityAddXform.request.outPointX.tx_hash +
+                `xUsed ${xUsed} < liquidityAddXform.request.sudtXMin ${liquidityAddXform.request.sudtXMin}`,
+            )
+            liquidityAddXform.skip = true
+            return
+        }
+        if( yUsed < liquidityAddXform.request.sudtYMin){
+            this.#info(liquidityAddXform.request.getOutPoint(),
+                'process liquidity add, txHash: ' + liquidityAddXform.request.outPointX.tx_hash +
+                `yUsed ${yUsed} < liquidityAddXform.request.sudtYMin ${liquidityAddXform.request.sudtYMin}`,
+            )
             liquidityAddXform.skip = true
             return
         }
