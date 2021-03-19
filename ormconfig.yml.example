@@ -17,7 +17,7 @@ development-ckDAI:
   entities:
     - src/**/*.entity.ts
   logging: false
-  logger: advanced-console
+  workerLogger: advanced-console
   synchronize: true
 
 development-ckETH:
@@ -27,7 +27,7 @@ development-ckETH:
   entities:
     - src/**/*.entity.ts
   logging: false
-  logger: advanced-console
+  workerLogger: advanced-console
   synchronize: true
 
 development-ckUSDC:
@@ -37,7 +37,7 @@ development-ckUSDC:
   entities:
     - src/**/*.entity.ts
   logging: false
-  logger: advanced-console
+  workerLogger: advanced-console
   synchronize: true
 
 development-ckUSDT:
@@ -47,7 +47,7 @@ development-ckUSDT:
   entities:
     - src/**/*.entity.ts
   logging: false
-  logger: advanced-console
+  workerLogger: advanced-console
   synchronize: true
 
 development-Glia:
@@ -57,7 +57,7 @@ development-Glia:
   entities:
     - src/**/*.entity.ts
   logging: false
-  logger: advanced-console
+  workerLogger: advanced-console
   synchronize: true
 
 #test:
@@ -76,5 +76,5 @@ test:
   entities:
     - src/**/*.entity.ts
   logging: false
-  logger: advanced-console
+  workerLogger: advanced-console
   synchronize: true

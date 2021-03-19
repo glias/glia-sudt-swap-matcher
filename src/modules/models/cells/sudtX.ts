@@ -1,6 +1,6 @@
 import { calcScriptLength, defaultScript, Uint128BigIntToLeHex, Uint64BigIntToHex } from '../../../utils/tools'
 import { CellOutputType } from './interfaces/CellOutputType'
-import { SUDT_X_TYPE_SCRIPT } from '../../../utils/envs'
+import { SUDT_X_TYPE_SCRIPT } from '../../../utils/workEnv'
 
 /*
 

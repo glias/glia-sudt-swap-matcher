@@ -7,7 +7,7 @@
     "node": ">=12 <13"
   },
   "scripts": {
-    "start:PenPen:Glia:dev": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./configs/PenPen-Glia.env ts-node src/index",
+    "start": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./configs/cooperator.env ts-node src/index",
     "test": "cross-env DOTENV_CONFIG_PATH=./test.env NODE_ENV=test jest",
     "build:dev": "cross-env NODE_ENV=development yarn run tsc",
     "build:prod": "cross-env NODE_ENV=production yarn run tsc",
@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@ckb-lumos/sql-indexer": "0.14.2-rc6",
+    "@ckb-lumos/hd": "0.14.2-rc6",
     "@nervosnetwork/ckb-sdk-core": "0.39",
     "@nervosnetwork/ckb-sdk-rpc": "0.39",
     "@nervosnetwork/ckb-sdk-utils": "0.39",
@@ -59,6 +60,7 @@
     "@types/express": "^4.17.9",
     "@types/json-bigint": "^1.0.0",
     "@types/lodash": "^4.14.168",
+    "axios": "^0.21.1",
     "bigint-isqrt": "0.2.1",
     "class-validator": "0.12.2",
     "commander": "6.2.1",

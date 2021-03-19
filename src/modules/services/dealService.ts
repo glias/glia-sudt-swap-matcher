@@ -2,23 +2,23 @@ import { injectable } from 'inversify'
 import { getConnection, In } from 'typeorm'
 import DealRepository from '../repositories/deal.repository'
 import { Deal, DealStatus } from '../models/entities/deal.entity'
-import { TYPEORM_ENV,NODE_ENV } from '../../utils/envs'
-import { logger } from '../../utils/logger'
+import { INSTANCE_NAME,NODE_ENV } from '../../utils/workEnv'
+import { workerLogger } from '../../utils/workerLogger'
 
 @injectable()
 export default class DealService {
   #dealRepository: DealRepository
 
   constructor() {
-    this.#info(`using db profile ${TYPEORM_ENV}`)
-    this.#dealRepository = getConnection(TYPEORM_ENV).getCustomRepository(DealRepository)
+    this.#info(`using db profile ${INSTANCE_NAME}`)
+    this.#dealRepository = getConnection(INSTANCE_NAME).getCustomRepository(DealRepository)
   }
 
   #error = (msg: string) => {
-    logger.error(`DealService: ${msg}`)
+    workerLogger.error(`DealService: ${msg}`)
   }
   #info = (msg: string) => {
-    logger.error(`DealService: ${msg}`)
+    workerLogger.info(`DealService: ${msg}`)
   }
 
   clearDb = async (): Promise<void> =>{

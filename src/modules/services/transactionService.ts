@@ -1,9 +1,9 @@
 import { injectable } from 'inversify'
-import { ALL_CELL_DEPS, CKB_NODE_URL, MATCHER_PRIVATE_KEY } from '../../utils/envs'
+import { ALL_CELL_DEPS, CKB_NODE_URL, MATCHER_PRIVATE_KEY } from '../../utils/workEnv'
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import { MatchRecord } from '../models/matches/matchRecord'
 import JSONbig from 'json-bigint'
-import { logger } from '../../utils/logger'
+import { workerLogger } from '../../utils/workerLogger'
 import {remove0xPrefix, Uint64BigIntToLeHex} from '../../utils/tools'
 
 /*
@@ -14,11 +14,11 @@ export default class TransactionService {
   readonly #ckb: CKB
 
   #info = (msg: string) => {
-    logger.info(`TransactionService: ${msg}`)
+    workerLogger.info(`TransactionService: ${msg}`)
   }
   // @ts-ignore
   #error = (msg: string) => {
-    logger.error(`TransactionService: ${msg}`)
+    workerLogger.error(`TransactionService: ${msg}`)
   }
 
   constructor() {

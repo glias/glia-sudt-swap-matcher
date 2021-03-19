@@ -2,18 +2,19 @@ import 'dotenv/config'
 import { blake160, privateKeyToPublicKey, scriptToHash } from '@nervosnetwork/ckb-sdk-utils'
 import { HashType, QueryOptions } from '@ckb-lumos/base'
 import { ckbBlake2b, /*prepare0xPrefix,*/ remove0xPrefix, scriptCamelToSnake } from './tools'
-import { logger } from './logger'
+import { workerLogger } from './workerLogger'
+// @ts-ignore
 import JSONbig from 'json-bigint'
 
 function log(msg: string) {
-  logger.info(`${msg}`)
+  workerLogger.info(`workEnv: ${msg}`)
 }
 
 //const CKB_HEX: string = prepare0xPrefix(Buffer.from('ckb', 'utf-8').toString('hex'))
 
 export const NODE_ENV: string = process.env.NODE_ENV ? process.env.NODE_ENV : 'production'
-export const TYPEORM_PROFILE_MAME :string = process.env.TYPEORM_PROFILE_MAME!
-export const TYPEORM_ENV:string = `${NODE_ENV}-${TYPEORM_PROFILE_MAME!}`
+// export const TYPEORM_PROFILE_MAME :string = process.env.TYPEORM_PROFILE_MAME!
+// export const TYPEORM_ENV:string = `${NODE_ENV}-${TYPEORM_PROFILE_MAME!}`
 
 export const INDEXER_URL: string = process.env.INDEXER_URL!
 export const INDEXER_MYSQL_URL = process.env.INDEXER_MYSQL_URL!
@@ -23,7 +24,7 @@ export const INDEXER_MYSQL_PASSWORD = process.env.INDEXER_MYSQL_PASSWORD!
 export const INDEXER_MYSQL_DATABASE = process.env.INDEXER_MYSQL_DATABASE!
 
 export const CKB_NODE_URL = process.env.CKB_NODE_URL!
-export const INDEXER_DB_PATH = 'indexer-data'
+
 export const BLOCK_MINER_FEE = process.env.BLOCK_MINER_FEE ? BigInt(process.env.BLOCK_MINER_FEE) : 100000n
 
 // sudt
@@ -51,6 +52,7 @@ export const SUDT_X_TYPE_SCRIPT: CKBComponents.Script = {
 }
 export const SUDT_X_TYPE_SCRIPT_HASH = scriptToHash(SUDT_X_TYPE_SCRIPT)
 log(`SUDT_X_TYPE_SCRIPT_HASH:${SUDT_X_TYPE_SCRIPT_HASH}`)
+export const SUDT_X_SYMBOL = process.env.SUDT_X_SYMBOL!
 
 
 // sudt_y
@@ -70,6 +72,7 @@ export const SUDT_Y_TYPE_SCRIPT: CKBComponents.Script = {
 }
 export const SUDT_Y_TYPE_SCRIPT_HASH = scriptToHash(SUDT_Y_TYPE_SCRIPT)
 log(`SUDT_Y_TYPE_SCRIPT_HASH:${SUDT_Y_TYPE_SCRIPT_HASH}`)
+export const SUDT_Y_SYMBOL = process.env.SUDT_Y_SYMBOL!
 
 
 // info cell type script and lock script
@@ -227,7 +230,7 @@ export const POOL_Y_QUERY_OPTION: QueryOptions = {
     argsLen: 64,
     script: scriptCamelToSnake(POOL_Y_LOCK_SCRIPT),
   },
-  fromBlock: POOL_X_FROM_BLOCK,
+  fromBlock: POOL_Y_FROM_BLOCK,
 }
 
 
@@ -506,15 +509,18 @@ export const MATCHER_QUERY_OPTION: QueryOptions = {
   fromBlock: MATCHER_FROM_BLOCK,
 }
 
-log('INFO_QUERY_OPTION: ' + JSONbig.stringify(INFO_QUERY_OPTION,null,2))
-log('POOL_X_QUERY_OPTION: ' + JSONbig.stringify(POOL_X_QUERY_OPTION,null,2))
-log('POOL_Y_QUERY_OPTION: ' + JSONbig.stringify(POOL_Y_QUERY_OPTION,null,2))
-log('LIQUIDITY_ADD_X_REQ_QUERY_OPTION: ' + JSONbig.stringify(LIQUIDITY_ADD_X_REQ_QUERY_OPTION,null,2))
-log('LIQUIDITY_ADD_Y_REQ_QUERY_OPTION: ' + JSONbig.stringify(LIQUIDITY_ADD_Y_REQ_QUERY_OPTION,null,2))
-log('LIQUIDITY_REMOVE_REQ_QUERY_OPTION: ' + JSONbig.stringify(LIQUIDITY_REMOVE_REQ_QUERY_OPTION,null,2))
-log('SWAP_BUY_REQ_QUERY_OPTION: ' + JSONbig.stringify(SWAP_BUY_REQ_QUERY_OPTION,null,2))
-log('SWAP_SELL_REQ_QUERY_OPTION: ' + JSONbig.stringify(SWAP_SELL_REQ_QUERY_OPTION,null,2))
-log('MATCHER_QUERY_OPTION: ' + JSONbig.stringify(MATCHER_QUERY_OPTION,null,2))
+export const INSTANCE_NAME:string = SUDT_X_SYMBOL + '-' + SUDT_Y_SYMBOL
+log(`INSTANCE_NAME:${INSTANCE_NAME}`)
+
+// log('INFO_QUERY_OPTION: ' + JSONbig.stringify(INFO_QUERY_OPTION,null,2))
+// log('POOL_X_QUERY_OPTION: ' + JSONbig.stringify(POOL_X_QUERY_OPTION,null,2))
+// log('POOL_Y_QUERY_OPTION: ' + JSONbig.stringify(POOL_Y_QUERY_OPTION,null,2))
+// log('LIQUIDITY_ADD_X_REQ_QUERY_OPTION: ' + JSONbig.stringify(LIQUIDITY_ADD_X_REQ_QUERY_OPTION,null,2))
+// log('LIQUIDITY_ADD_Y_REQ_QUERY_OPTION: ' + JSONbig.stringify(LIQUIDITY_ADD_Y_REQ_QUERY_OPTION,null,2))
+// log('LIQUIDITY_REMOVE_REQ_QUERY_OPTION: ' + JSONbig.stringify(LIQUIDITY_REMOVE_REQ_QUERY_OPTION,null,2))
+// log('SWAP_BUY_REQ_QUERY_OPTION: ' + JSONbig.stringify(SWAP_BUY_REQ_QUERY_OPTION,null,2))
+// log('SWAP_SELL_REQ_QUERY_OPTION: ' + JSONbig.stringify(SWAP_SELL_REQ_QUERY_OPTION,null,2))
+// log('MATCHER_QUERY_OPTION: ' + JSONbig.stringify(MATCHER_QUERY_OPTION,null,2))
 
 export const ALL_CELL_DEPS = [
   {

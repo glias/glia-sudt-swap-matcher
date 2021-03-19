@@ -1,7 +1,7 @@
 import { inject, injectable, LazyServiceIdentifer } from 'inversify'
 import { CronJob } from 'cron'
 import { modules } from '../../container'
-import { logger } from '../../utils/logger'
+import { workerLogger } from '../../utils/workerLogger'
 import { Deal, DealStatus } from '../models/entities/deal.entity'
 import ScanService from './scanService'
 import RpcService from './rpcService'
@@ -19,7 +19,7 @@ import { SwapSellTransformation } from '../models/transformation/swapSellTransfo
 import { LiquidityInitTransformation } from '../models/transformation/liquidityInitTransformation'
 import JSONbig from 'json-bigint'
 import {PoolY} from "../models/cells/poolY";
-
+import process from 'process'
 const jsonbig = JSONbig({ useNativeBigInt: true,alwaysParseAsBig:true})
 
 
@@ -31,15 +31,14 @@ export default class TaskService {
   readonly #matcherService: MatcherService
   readonly #transactionService: TransactionService
 
-  readonly #schedule = '*/10 * * * * *'
-
+  #schedule = `30 * * * * *`//default
   #cronLock: boolean = false
 
   #info = (msg: string) => {
-    logger.info(`TaskService: ${msg}`)
+    workerLogger.info(`TaskService: ${msg}`)
   }
   #error = (msg: string) => {
-    logger.error(`TaskService: ${msg}`)
+    workerLogger.error(`TaskService: ${msg}`)
   }
 
   constructor(
@@ -54,9 +53,17 @@ export default class TaskService {
     this.#rpcService = rpcService
     this.#matcherService = matcherService
     this.#transactionService = transactionService
+
+    const randomSecond = Math.floor(Math.random() * Math.floor(60));
+    this.#schedule = `${randomSecond} * * * * *`
+    this.#info(`schedule: ${this.#schedule}`)
   }
 
   start = async () => {
+    process.on("SIGINT",(_signal)=>{
+      this.#info('receive SIGINT' + new Date())
+      process.exit(0)
+    })
     new CronJob(this.#schedule, this.wrapperedTask, null, true)
   }
 
@@ -65,6 +72,9 @@ export default class TaskService {
       this.#cronLock = true
       try {
         this.#info('task job starts: ' + new Date())
+
+        //process.exit(0)
+
         await this.task()
         this.#info('task job finishes: ' + new Date())
 

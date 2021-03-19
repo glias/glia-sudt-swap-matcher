@@ -32,6 +32,7 @@ export class LiquidityAddTransformation implements Transformation {
     // either of following
     sudtXChangeAmount: bigint
     sudtYChangeAmount: bigint
+    changeType: ChangeType
 
     // must be set outside due to tip
     ckbChangeAmount: bigint
@@ -52,6 +53,7 @@ export class LiquidityAddTransformation implements Transformation {
         this.ckbChangeAmount = 0n
         this.processed = false
         this.skip = false
+        this.changeType = 'x'
     }
 
     minCapacity(which: ChangeType): bigint {
@@ -81,20 +83,19 @@ export class LiquidityAddTransformation implements Transformation {
             let ckbLeft = this.ckbChangeAmount
             this.outputLpt = Lpt.from(this.lptAmount, this.request.originalUserLock)
             ckbLeft -= this.outputLpt.capacity
-            if (this.sudtYChangeAmount !== 0n) {
-                // compose sudtY
-                // maybe sudtY are 0 two, both sudts has been exhausted, we build a 0 sudtY
-                this.outputSudtXOrSudtY = SudtY.from(
-                    this.sudtYChangeAmount,
-                    this.request.originalUserLock
-                )
-            } else {
-                // compose sudtX
+
+            if(this.changeType == 'x'){
                 this.outputSudtXOrSudtY = SudtX.from(
                     this.sudtXChangeAmount,
                     this.request.originalUserLock,
                 )
+            }else{
+                this.outputSudtXOrSudtY = SudtY.from(
+                    this.sudtYChangeAmount,
+                    this.request.originalUserLock
+                )
             }
+
             ckbLeft -= this.outputSudtXOrSudtY.capacity
             this.outputCkb = Ckb.from(ckbLeft, this.request.originalUserLock)
         }

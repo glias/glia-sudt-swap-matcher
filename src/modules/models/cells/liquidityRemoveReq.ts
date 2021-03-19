@@ -8,7 +8,7 @@ import {
     prepare0xPrefix,
     scriptHash,
 } from '../../../utils/tools'
-import {LPT_TYPE_SCRIPT_HASH} from '../../../utils/envs'
+import {LPT_TYPE_SCRIPT_HASH} from '../../../utils/workEnv'
 import {CellInputType} from './interfaces/CellInputType'
 
 /*

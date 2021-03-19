@@ -2,7 +2,7 @@ import { Cell, OutPoint } from '@ckb-lumos/base'
 import { defaultOutPoint, leHexToBigIntUint128, Uint128BigIntToLeHex, Uint64BigIntToHex } from '../../../utils/tools'
 import { CellOutputType } from './interfaces/CellOutputType'
 import { CellInputType } from './interfaces/CellInputType'
-import { POOL_X_LOCK_SCRIPT, POOL_X_TYPE_SCRIPT } from '../../../utils/envs'
+import { POOL_X_LOCK_SCRIPT, POOL_X_TYPE_SCRIPT } from '../../../utils/workEnv'
 
 /*
 define POOL_BASE_CAPACITY =  186 * 10^8

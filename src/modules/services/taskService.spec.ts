@@ -18,12 +18,12 @@ import MatcherService from './matcherService'
 import TransactionService from './transactionService'
 import { LiquidityAddReq } from '../models/cells/liquidityAddReq'
 import { createConnection } from 'typeorm'
-import { NODE_ENV, TYPEORM_ENV } from '../../utils/envs'
+import { NODE_ENV, TYPEORM_ENV } from '../../utils/workEnv'
 import { D1,D2,A1,A2,C1,C2,A5,A6,A8,A9,B1,req1, req2, req3 } from './taskService.info.spec'
 import JSONbig from 'json-bigint'
 import MonitorService from './monitorService'
 
-jest.setMock('../../utils/logger', {
+jest.setMock('../../utils/workerLogger', {
   logger: winston.createLogger({
     level: 'debug',
     format: format.combine(format.simple()),

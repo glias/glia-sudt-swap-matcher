@@ -1,6 +1,6 @@
 import { calcScriptLength, defaultScript, Uint128BigIntToLeHex, Uint64BigIntToHex } from '../../../utils/tools'
 import { CellOutputType } from './interfaces/CellOutputType'
-import { LPT_TYPE_SCRIPT } from '../../../utils/envs'
+import { LPT_TYPE_SCRIPT } from '../../../utils/workEnv'
 
 // though LPT is a specific type of SUDT, we give it a unique class to represent
 // and note that the capacity is fixed to SUDT_CAPACITY = 142 * 10^8

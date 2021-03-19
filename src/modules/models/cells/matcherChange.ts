@@ -2,7 +2,7 @@ import { Cell, OutPoint } from '@ckb-lumos/base'
 import { defaultOutPoint, Uint64BigIntToHex } from '../../../utils/tools'
 import { CellOutputType } from './interfaces/CellOutputType'
 import { CellInputType } from './interfaces/CellInputType'
-import { BLOCK_MINER_FEE, MATCHER_LOCK_SCRIPT } from '../../../utils/envs'
+import { BLOCK_MINER_FEE, MATCHER_LOCK_SCRIPT } from '../../../utils/workEnv'
 
 // for tips, matcherChange only hold ckbs
 // thought matcherChange is as same as Ckb, we give it a special class

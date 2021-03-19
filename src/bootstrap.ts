@@ -3,8 +3,9 @@ import path from 'path'
 import { promisify } from 'util'
 import { createConnection } from 'typeorm'
 import { container, modules } from './container'
-import { logger } from './utils/logger'
-import { TYPEORM_ENV } from './utils/envs'
+import { workerLogger } from './utils/workerLogger'
+import {INSTANCE_NAME,NODE_ENV} from './utils/workEnv'
+import {SqliteConnectionOptions} from "typeorm/driver/sqlite/SqliteConnectionOptions";
 
 const registerModule = async (modulePath: string) => {
   const { default: m } = await import(modulePath)
@@ -14,11 +15,21 @@ const registerModule = async (modulePath: string) => {
 
 const connectDatabase = async () => {
   try{
-    const connection = await createConnection(TYPEORM_ENV)
-    logger.info(`database connected to ${connection.name}`)
+    const connexionConfig : SqliteConnectionOptions= {
+      name: `${INSTANCE_NAME}`,
+      database: `db/glia-amm.sqlite3.${INSTANCE_NAME}.${NODE_ENV}`,
+      type: "sqlite",
+      entities: [`src/**/*.entity.ts`],
+      logging:false,
+      logger:`advanced-console`,
+      synchronize:true
+    }
+
+    const connection = await createConnection(connexionConfig)
+    workerLogger.info(`database connected to ${connection.name}`)
     //return connection
   }catch (e){
-    logger.error(e)
+    workerLogger.error(e)
   }
 }
 
@@ -37,7 +48,7 @@ const bootstrap = async () => {
     for (const injectablePath of injectablePaths) {
       try {
         await registerModule(injectablePath)
-        logger.info(`inversify: registered module: ${injectablePath}`)
+        workerLogger.info(`inversify: registered module: ${injectablePath}`)
       } catch (e) {
         // we just skip for files don't have injectables :)
       }

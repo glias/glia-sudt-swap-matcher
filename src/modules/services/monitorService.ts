@@ -1,17 +1,17 @@
 import { injectable } from 'inversify'
-import { logger } from '../../utils/logger'
+import { workerLogger } from '../../utils/workerLogger'
 
 @injectable()
 export default class MonitorService {
 
   // @ts-ignore
   #info = (msg: string) => {
-    logger.info(`MonitorService: ${msg}`)
+    workerLogger.info(`MonitorService: ${msg}`)
   }
 
   // @ts-ignore
   #error = (msg: string) => {
-    logger.error(`MonitorService: ${msg}`)
+    workerLogger.error(`MonitorService: ${msg}`)
   }
 
   // outPoint -> information

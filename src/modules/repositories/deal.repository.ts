@@ -1,12 +1,12 @@
 import { EntityRepository, Repository } from 'typeorm'
 import { Deal, DealStatus } from '../models/entities/deal.entity'
-import { logger } from '../../utils/logger'
+import { workerLogger } from '../../utils/workerLogger'
 
 @EntityRepository(Deal)
 class DealRepository extends Repository<Deal> {
   // @ts-ignore
   #error = (msg: string) => {
-    logger.error(`DealRepository: ${msg}`)
+    workerLogger.error(`DealRepository: ${msg}`)
   }
 
   saveDeal = async (deal: Omit<Deal, 'id' | 'createdAt'>): Promise<void> => {

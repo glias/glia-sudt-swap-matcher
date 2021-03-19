@@ -1,11 +1,11 @@
 import { injectable } from 'inversify'
 import Rpc from '@nervosnetwork/ckb-sdk-rpc'
-import { CKB_NODE_URL, PW_LOCK_CODE_HASH, PW_LOCK_HASH_TYPE } from '../../utils/envs'
+import { CKB_NODE_URL, PW_LOCK_CODE_HASH, PW_LOCK_HASH_TYPE } from '../../utils/workEnv'
 import { DealStatus } from '../models/entities/deal.entity'
 import { OutPoint } from '@ckb-lumos/base'
 import { scriptToHash } from '@nervosnetwork/ckb-sdk-utils'
 import JSONbig from 'json-bigint'
-import { logger } from '../../utils/logger'
+import { workerLogger } from '../../utils/workerLogger'
 import { prepare0xPrefix, remove0xPrefix } from '../../utils/tools'
 import { WitnessArgs } from '../../utils/blockchain'
 import { ETHSPVProof, MintTokenWitness } from '../../utils/witness'
@@ -16,10 +16,10 @@ export default class RpcService {
   #client: Rpc
 
   #info = (msg: string) => {
-    logger.info(`RpcService: ${msg}`)
+    workerLogger.info(`RpcService: ${msg}`)
   }
   #error = (msg: string) => {
-    logger.error(`RpcService: ${msg}`)
+    workerLogger.error(`RpcService: ${msg}`)
   }
 
   constructor() {

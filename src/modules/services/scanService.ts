@@ -15,7 +15,7 @@ import {
   POOL_Y_QUERY_OPTION,
   SWAP_BUY_REQ_QUERY_OPTION,
   SWAP_SELL_REQ_QUERY_OPTION,
-} from '../../utils/envs'
+} from '../../utils/workEnv'
 import { SwapBuyReq } from '../models/cells/swapBuyReq'
 import { inject, injectable, LazyServiceIdentifer } from 'inversify'
 import { Info } from '../models/cells/info'
@@ -31,7 +31,7 @@ import { SwapBuyTransformation } from '../models/transformation/swapBuyTransform
 import { SwapSellTransformation } from '../models/transformation/swapSellTransformation'
 import { SwapSellReq } from '../models/cells/swapSellReq'
 import {bigIntToHex, scriptSnakeToCamel} from '../../utils/tools'
-import { logger } from '../../utils/logger'
+import { workerLogger } from '../../utils/workerLogger'
 // @ts-ignore
 import JSONbig from 'json-bigint'
 import {scriptToHash} from "@nervosnetwork/ckb-sdk-utils";
@@ -46,11 +46,11 @@ export default class ScanService {
 
   // @ts-ignore
   #info = (msg: string) => {
-    logger.info(`ScanService: ${msg}`)
+    workerLogger.info(`ScanService: ${msg}`)
   }
   // @ts-ignore
   #error = (msg: string) => {
-    logger.error(`ScanService: ${msg}`)
+    workerLogger.error(`ScanService: ${msg}`)
   }
 
   constructor(@inject(new LazyServiceIdentifer(() => modules[RpcService.name])) rpcService: RpcService) {

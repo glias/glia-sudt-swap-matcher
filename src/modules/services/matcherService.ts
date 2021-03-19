@@ -6,7 +6,7 @@ import {MatchRecord} from '../models/matches/matchRecord'
 import {SwapSellTransformation} from '../models/transformation/swapSellTransformation'
 // @ts-ignore
 import sqrt from 'bigint-isqrt'
-import {logger} from '../../utils/logger'
+import {workerLogger} from '../../utils/workerLogger'
 import MonitorService from './monitorService'
 import {modules} from '../../container'
 
@@ -17,12 +17,12 @@ export default class MatcherService {
 
     // @ts-ignore
     #info = (outpoint: string, msg: string) => {
-        logger.info(`MatcherService: ${msg}`)
+        workerLogger.info(`MatcherService: ${msg}`)
         this.#monitorService.update(outpoint, msg)
     }
     // @ts-ignore
     #error = (outpoint: string, msg: string) => {
-        logger.error(`MatcherService: ${msg}`)
+        workerLogger.error(`MatcherService: ${msg}`)
         this.#monitorService.update(outpoint, msg)
     }
 
@@ -340,15 +340,16 @@ export default class MatcherService {
         let yNeed = xIn * matchRecord.info.sudtYReserve / matchRecord.info.sudtXReserve + 1n
         if(yNeed <= yIn){
             // exhaust x and y remains
+            // xchange==0, ychange maybe =0, maybe not
             lptGot = xIn * matchRecord.info.totalLiquidity  / matchRecord.info.sudtXReserve + 1n
             xUsed = xIn
             yUsed = yNeed
-            // if yChange === 0 , empty sudt cell will be composed
             yChange = yIn - yNeed
             changeType = 'y'
+
         }else{
             // exhaust y and x remains
-
+            // ychange==0 ,xchange maybe =0, maybe not
             let xNeed = yIn * matchRecord.info.sudtXReserve / matchRecord.info.sudtYReserve + 1n
             lptGot = yIn * matchRecord.info.totalLiquidity  / matchRecord.info.sudtYReserve + 1n
             xUsed = xNeed
@@ -373,9 +374,26 @@ export default class MatcherService {
         if(liquidityAddXform.request.capacity - liquidityAddXform.request.tips < liquidityAddXform.minCapacity(changeType)){
             this.#info(liquidityAddXform.request.getOutPoint(),
                 'process liquidity add, txHash: ' + liquidityAddXform.request.outPointX.tx_hash +
-                `liquidityAddXform.request.capacity &{liquidityAddXform.request.capacity} - liquidityAddXform.request.tips ${liquidityAddXform.request.tips} < liquidityAddXform.minCapacity(changeType) ${liquidityAddXform.minCapacity(changeType)}`,
+                `liquidityAddXform.request.capacity ${liquidityAddXform.request.capacity} - liquidityAddXform.request.tips ${liquidityAddXform.request.tips} < liquidityAddXform.minCapacity(changeType) ${liquidityAddXform.minCapacity(changeType)}`,
             )
 
+            liquidityAddXform.skip = true
+            return
+        }
+
+        if( xUsed < liquidityAddXform.request.sudtXMin){
+            this.#info(liquidityAddXform.request.getOutPoint(),
+                'process liquidity add, txHash: ' + liquidityAddXform.request.outPointX.tx_hash +
+                `xUsed ${xUsed} < liquidityAddXform.request.sudtXMin ${liquidityAddXform.request.sudtXMin}`,
+            )
+            liquidityAddXform.skip = true
+            return
+        }
+        if( yUsed < liquidityAddXform.request.sudtYMin){
+            this.#info(liquidityAddXform.request.getOutPoint(),
+                'process liquidity add, txHash: ' + liquidityAddXform.request.outPointX.tx_hash +
+                `yUsed ${yUsed} < liquidityAddXform.request.sudtYMin ${liquidityAddXform.request.sudtYMin}`,
+            )
             liquidityAddXform.skip = true
             return
         }
@@ -388,7 +406,7 @@ export default class MatcherService {
 
         liquidityAddXform.sudtXChangeAmount = xChange
         liquidityAddXform.sudtYChangeAmount = yChange
-
+        liquidityAddXform.changeType = changeType
         liquidityAddXform.lptAmount = lptGot
 
         // update info

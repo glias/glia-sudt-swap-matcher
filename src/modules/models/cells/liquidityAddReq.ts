@@ -8,7 +8,7 @@ import {
     prepare0xPrefix,
     scriptHash,
 } from '../../../utils/tools'
-import {SUDT_X_TYPE_SCRIPT_HASH,SUDT_Y_TYPE_SCRIPT_HASH} from '../../../utils/envs'
+import {SUDT_X_TYPE_SCRIPT_HASH,SUDT_Y_TYPE_SCRIPT_HASH} from '../../../utils/workEnv'
 import {CellInputType} from './interfaces/CellInputType'
 
 /*

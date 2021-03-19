@@ -7,7 +7,7 @@ import {
 import { inject, LazyServiceIdentifer } from 'inversify'
 import * as express from 'express'
 import { controller, httpGet } from 'inversify-express-utils'
-import { logger } from '../../utils/logger'
+import { workerLogger } from '../../utils/workerLogger'
 import MonitorService from '../services/monitorService'
 import { prepare0xPrefix } from '../../utils/tools'
 
@@ -24,12 +24,12 @@ export default class MonitorController {
 
   // @ts-ignore
   #info = (msg: string) => {
-    logger.info(`MonitorController: ${msg}`)
+    workerLogger.info(`MonitorController: ${msg}`)
   }
 
   // @ts-ignore
   #error = (msg: string) => {
-    logger.error(`MonitorController: ${msg}`)
+    workerLogger.error(`MonitorController: ${msg}`)
   }
 
   constructor (

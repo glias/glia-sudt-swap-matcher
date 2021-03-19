@@ -13,7 +13,7 @@ import {
     INFO_TYPE_SCRIPT,
     INFO_TYPE_SCRIPT_HASH,
     LPT_TYPE_SCRIPT_HASH,
-} from '../../../utils/envs'
+} from '../../../utils/workEnv'
 import {CellOutputType} from './interfaces/CellOutputType'
 import {CellInputType} from './interfaces/CellInputType'
 
