@@ -340,15 +340,16 @@ export default class MatcherService {
         let yNeed = xIn * matchRecord.info.sudtYReserve / matchRecord.info.sudtXReserve + 1n
         if(yNeed <= yIn){
             // exhaust x and y remains
+            // xchange==0, ychange maybe =0, maybe not
             lptGot = xIn * matchRecord.info.totalLiquidity  / matchRecord.info.sudtXReserve + 1n
             xUsed = xIn
             yUsed = yNeed
-            // if yChange === 0 , empty sudt cell will be composed
             yChange = yIn - yNeed
             changeType = 'y'
+
         }else{
             // exhaust y and x remains
-
+            // ychange==0 ,xchange maybe =0, maybe not
             let xNeed = yIn * matchRecord.info.sudtXReserve / matchRecord.info.sudtYReserve + 1n
             lptGot = yIn * matchRecord.info.totalLiquidity  / matchRecord.info.sudtYReserve + 1n
             xUsed = xNeed
@@ -405,7 +406,7 @@ export default class MatcherService {
 
         liquidityAddXform.sudtXChangeAmount = xChange
         liquidityAddXform.sudtYChangeAmount = yChange
-
+        liquidityAddXform.changeType = changeType
         liquidityAddXform.lptAmount = lptGot
 
         // update info
