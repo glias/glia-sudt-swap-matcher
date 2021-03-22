@@ -1,12 +1,11 @@
 import { injectable } from 'inversify'
 import Rpc from '@nervosnetwork/ckb-sdk-rpc'
 import { CKB_NODE_URL, PW_LOCK_CODE_HASH, PW_LOCK_HASH_TYPE } from '../../utils/workEnv'
-import { DealStatus } from '../models/entities/deal.entity'
 import { OutPoint } from '@ckb-lumos/base'
 import { scriptToHash } from '@nervosnetwork/ckb-sdk-utils'
 import JSONbig from 'json-bigint'
 import { workerLogger } from '../../utils/workerLogger'
-import {prepare0xPrefix, remove0xPrefix} from '../../utils/tools'
+import {prepare0xPrefix, remove0xPrefix, waitTx} from '../../utils/tools'
 import { WitnessArgs } from '../../utils/blockchain'
 import {ETHSPVProof, MintTokenWitness} from '../../utils/witness'
 import * as rlp from 'rlp'
@@ -30,37 +29,6 @@ export default class RpcService {
   //   return await this.#client.getTipBlockNumber()
   // }
 
-  // this returns either committed or cut-off
-  getTxsStatus = async (txHashes: Array<string>): Promise<Array<[string, Omit<DealStatus, DealStatus.Sent>]>> => {
-    const requests: Array<['getTransaction', string]> = txHashes.map(hash => ['getTransaction', hash])
-
-    // if the tx is cut-off, rpc will return null
-    let rpcResults: Array<CKBComponents.TransactionWithStatus> = await this.#client.createBatchRequest(requests).exec()
-
-    this.#info(`rpc batch getTransaction result: ${JSONbig.stringify(rpcResults)}`)
-
-    const ret: Array<[string, Omit<DealStatus, DealStatus.Sent>]> = txHashes.map(
-      (hash, index) => {
-        const rpcResult = rpcResults[index]
-
-
-        if (rpcResult != null) {
-          if (hash !== rpcResult.transaction.hash) {
-            this.#error('getTxsStatus, that\'s impossible')
-          }
-          const txRes: Omit<DealStatus, DealStatus.Sent> =
-            rpcResult.txStatus.status === 'committed' ? DealStatus.Committed : DealStatus.CutOff
-          return [hash, txRes]
-        }
-        return [hash, DealStatus.CutOff]
-      })
-
-    return ret
-  }
-
-  // getTx = async (txHash: string): Promise<CKBComponents.TransactionWithStatus> => {
-  //   return await this.#client.getTransaction(txHash)
-  // }
 
   // give an outpoint of certain cell, find a lockscript fromCell the tx inside the
   // the outpoint which matches target hash
@@ -163,8 +131,8 @@ export default class RpcService {
   sendTransaction = async (rawTx: CKBComponents.RawTransaction): Promise<boolean> => {
     try {
       //this.#info('sendTransaction : ' + JSONbig.stringify(rawTx, null, 2))
-      await this.#client.sendTransaction(rawTx)
-      //await waitTx(txHash,this.#client)
+      const txHash = await this.#client.sendTransaction(rawTx)
+      await waitTx(txHash,this.#client)
       return true
     } catch (e) {
       this.#error('rawTx: '+JSONbig.stringify(rawTx,null,2))

@@ -82,7 +82,7 @@ export default class ScanService {
       Array<SwapSellTransformation>,
       Info,
       PoolX,
-        PoolY,
+      PoolY,
       MatcherChange,
     ]
   > => {

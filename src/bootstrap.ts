@@ -1,11 +1,12 @@
 import fs from 'fs'
 import path from 'path'
 import { promisify } from 'util'
-import { createConnection } from 'typeorm'
 import { container, modules } from './container'
 import { workerLogger } from './utils/workerLogger'
-import {INSTANCE_NAME,NODE_ENV} from './utils/workEnv'
-import {SqliteConnectionOptions} from "typeorm/driver/sqlite/SqliteConnectionOptions";
+
+// import { createConnection } from 'typeorm'
+// import {INSTANCE_NAME,NODE_ENV} from './utils/workEnv'
+// import {SqliteConnectionOptions} from "typeorm/driver/sqlite/SqliteConnectionOptions";
 
 const registerModule = async (modulePath: string) => {
   const { default: m } = await import(modulePath)
@@ -13,13 +14,13 @@ const registerModule = async (modulePath: string) => {
   container.bind(modules[m.name]).to(m)
 }
 
-const connectDatabase = async () => {
+/*const connectDatabase = async () => {
   try{
     const connexionConfig : SqliteConnectionOptions= {
       name: `${INSTANCE_NAME}`,
       database: `db/glia-amm.sqlite3.${INSTANCE_NAME}.${NODE_ENV}`,
       type: "sqlite",
-      entities: [`src/**/*.entity.ts`],
+      entities: [`src/!**!/!*.entity.ts`],
       logging:false,
       logger:`advanced-console`,
       synchronize:true
@@ -31,7 +32,7 @@ const connectDatabase = async () => {
   }catch (e){
     workerLogger.error(e)
   }
-}
+}*/
 
 // register all ts files under modules with @injectable()
 // connect to database
@@ -56,7 +57,7 @@ const bootstrap = async () => {
   }
 
   // connect to db
-  await connectDatabase()
+  //await connectDatabase()
 }
 
 export default bootstrap
