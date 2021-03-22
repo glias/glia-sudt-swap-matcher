@@ -3,7 +3,6 @@ FROM node:12
 WORKDIR /app
 
 ADD package.json .
-ADD ormconfig.yml.example ./ormconfig.yml
 ADD yarn.lock .
 ADD tsconfig.json .
 ADD src ./src

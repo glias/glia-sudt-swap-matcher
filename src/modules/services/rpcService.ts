@@ -50,9 +50,9 @@ export default class RpcService {
       const witness = tx.transaction.witnesses[0]
       const lock = this.parseWitness(witness)
 
-      console.log(JSONbig.stringify(lock))
-      console.log(scriptToHash(lock))
-      console.log(lockScriptHash)
+      this.#info(JSONbig.stringify(lock))
+      this.#info(scriptToHash(lock))
+      this.#info(lockScriptHash)
       if (scriptToHash(lock).toLowerCase() === lockScriptHash.toLowerCase()) {
         this.#info(`find script of tx ${lockScriptHash} from witness`)
         return lock
@@ -131,11 +131,12 @@ export default class RpcService {
   sendTransaction = async (rawTx: CKBComponents.RawTransaction): Promise<boolean> => {
     try {
       //this.#info('sendTransaction : ' + JSONbig.stringify(rawTx, null, 2))
-      const txHash = await this.#client.sendTransaction(rawTx)
+      const txHash : CKBComponents.Hash = await this.#client.sendTransaction(rawTx)
+      this.#info(`sendTransaction, txHash: ${txHash}`)
       await waitTx(txHash,this.#client)
       return true
     } catch (e) {
-      this.#error('rawTx: '+JSONbig.stringify(rawTx,null,2))
+      this.#error('sendTransaction error, rawTx: '+JSONbig.stringify(rawTx,null,2))
       this.#error('sendTransaction error: ' + e)
       return false
     }

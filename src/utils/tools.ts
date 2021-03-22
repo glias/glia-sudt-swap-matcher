@@ -127,12 +127,17 @@ export function calcScriptLength(script: CKBComponents.Script): bigint {
 }
 
 
-export async function waitTx(txHash: string, rpc: Rpc) {
+export async function waitTx(txHash : CKBComponents.Hash, rpc: Rpc) {
     while (true) {
-        const res: CKBComponents.TransactionWithStatus = await rpc.getTransaction(txHash)
-        if (res.txStatus.status === CKBComponents.TransactionStatus.Committed) {
-            break
+        try{
+            const res: CKBComponents.TransactionWithStatus = await rpc.getTransaction(txHash)
+            if (res.txStatus.status === CKBComponents.TransactionStatus.Committed) {
+                break
+            }
+        }catch (e){
+            console.log(e)
         }
+
         await sleep(5 * 1000)
     }
 }
