@@ -1,8 +1,8 @@
-import { Cell, OutPoint } from '@ckb-lumos/base'
-import { defaultOutPoint, leHexToBigIntUint128, Uint128BigIntToLeHex, Uint64BigIntToHex } from '../../../utils/tools'
-import { CellOutputType } from './interfaces/CellOutputType'
-import { CellInputType } from './interfaces/CellInputType'
-import { POOL_Y_LOCK_SCRIPT, POOL_Y_TYPE_SCRIPT } from '../../../utils/workEnv'
+import {Cell, OutPoint} from '@ckb-lumos/base'
+import {defaultOutPoint, leHexToBigIntUint128, Uint128BigIntToLeHex, Uint64BigIntToHex} from '../../../utils/tools'
+import {CellOutputType} from './interfaces/CellOutputType'
+import {CellInputType} from './interfaces/CellInputType'
+import {POOL_Y_LOCK_SCRIPT, POOL_Y_TYPE_SCRIPT} from '../../../utils/workEnv'
 
 /*
 define POOL_BASE_CAPACITY =  186 * 10^8
@@ -16,85 +16,85 @@ lock: - 97 bytes
     args: hash(ckb | asset_sudt_type_hash) 32 bytes | info_type_hash - 32 bytes
  */
 export class PoolY implements CellInputType, CellOutputType {
-  static POOL_FIXED_CAPACITY = BigInt(186 * 10 ** 8)
+    static POOL_FIXED_CAPACITY = BigInt(186 * 10 ** 8)
 
-  capacity: bigint
-  sudtAmount: bigint
+    capacity: bigint
+    sudtAmount: bigint
 
-  // for debug
-  readonly capacityOriginal: bigint
-  readonly sudtReserveOriginal: bigint
+    // for debug
+    readonly capacityOriginal: bigint
+    readonly sudtReserveOriginal: bigint
 
-  outPoint: OutPoint
+    outPoint: OutPoint
 
-  constructor(capacity: bigint, sudtAmount: bigint, outPoint: OutPoint) {
-    this.capacity = capacity
-    this.sudtAmount = sudtAmount
+    constructor(capacity: bigint, sudtAmount: bigint, outPoint: OutPoint) {
+        this.capacity = capacity
+        this.sudtAmount = sudtAmount
 
-    this.capacityOriginal = capacity
-    this.sudtReserveOriginal = sudtAmount
+        this.capacityOriginal = capacity
+        this.sudtReserveOriginal = sudtAmount
 
-    this.outPoint = outPoint
-  }
-
-  static validate(cell: Cell): boolean {
-    if (!cell.out_point) {
-      return false
+        this.outPoint = outPoint
     }
 
-    return true
-  }
+    static validate(cell: Cell): boolean {
+        if (!cell.out_point) {
+            return false
+        }
 
-  static fromCell(cell: Cell): PoolY | null {
-    if (!PoolY.validate(cell)) {
-      return null
+        return true
     }
-    let capacity = BigInt(cell.cell_output.capacity)
-    let sudtAmount = leHexToBigIntUint128(cell.data)
 
-    let outPoint = cell.out_point!
+    static fromCell(cell: Cell): PoolY | null {
+        if (!PoolY.validate(cell)) {
+            return null
+        }
+        let capacity = BigInt(cell.cell_output.capacity)
+        let sudtAmount = leHexToBigIntUint128(cell.data)
 
-    return new PoolY(capacity, sudtAmount, outPoint)
-  }
+        let outPoint = cell.out_point!
 
-  static default(): PoolY {
-    return new PoolY(0n, 0n, defaultOutPoint())
-  }
-
-  /*static cloneWith(pool: PoolY, txHash: string, index: string): PoolY {
-    pool = JSONbig.parse(JSONbig.stringify(pool))
-    pool.outPoint.tx_hash = txHash
-    pool.outPoint.index = index
-    return pool
-  }*/
-
-  toCellInput(): Array<CKBComponents.CellInput> {
-    return [{
-      previousOutput: {
-        txHash: this.outPoint.tx_hash,
-        index: this.outPoint.index,
-      },
-      since: '0x0',
-    }]
-  }
-
-  toCellOutput(): CKBComponents.CellOutput {
-    return {
-      capacity: Uint64BigIntToHex(this.capacity),
-      type: POOL_Y_TYPE_SCRIPT,
-      lock: POOL_Y_LOCK_SCRIPT,
+        return new PoolY(capacity, sudtAmount, outPoint)
     }
-  }
 
-  toCellOutputData(): string {
-    return `${Uint128BigIntToLeHex(this.sudtAmount)}`
-  }
+    static default(): PoolY {
+        return new PoolY(0n, 0n, defaultOutPoint())
+    }
 
-  getOutPoint(): string {
-    return `${this.outPoint.tx_hash}-${this.outPoint.index}`
-  }
+    /*static cloneWith(pool: PoolY, txHash: string, index: string): PoolY {
+      pool = JSONbig.parse(JSONbig.stringify(pool))
+      pool.outPoint.tx_hash = txHash
+      pool.outPoint.index = index
+      return pool
+    }*/
 
-  static fromJSON(source: Object): PoolY {
-    return Object.assign(PoolY.default(), source);
-  }
+    toCellInput(): Array<CKBComponents.CellInput> {
+        return [{
+            previousOutput: {
+                txHash: this.outPoint.tx_hash,
+                index: this.outPoint.index,
+            },
+            since: '0x0',
+        }]
+    }
+
+    toCellOutput(): CKBComponents.CellOutput {
+        return {
+            capacity: Uint64BigIntToHex(this.capacity),
+            type: POOL_Y_TYPE_SCRIPT,
+            lock: POOL_Y_LOCK_SCRIPT,
+        }
+    }
+
+    toCellOutputData(): string {
+        return `${Uint128BigIntToLeHex(this.sudtAmount)}`
+    }
+
+    getOutPoint(): string {
+        return `${this.outPoint.tx_hash}-${this.outPoint.index}`
+    }
+
+    static fromJSON(source: Object): PoolY {
+        return Object.assign(PoolY.default(), source);
+    }
 }

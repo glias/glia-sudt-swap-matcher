@@ -60,7 +60,6 @@ export class LiquidityRemoveReq implements CellInputType {
         capacity: bigint,
         lptAmount: bigint,
         infoTypeHash: string,
-
         userLockHash: string,
         version: string,
         sudtXMin: bigint,
@@ -125,7 +124,7 @@ export class LiquidityRemoveReq implements CellInputType {
     }
 
     static default(): LiquidityRemoveReq {
-        return new LiquidityRemoveReq(0n, 0n, '', '','', 0n, 0n,  0n, 0n, defaultScript(), defaultOutPoint())
+        return new LiquidityRemoveReq(0n, 0n, '', '', '', 0n, 0n, 0n, 0n, defaultScript(), defaultOutPoint())
     }
 
     static validate(cell: Cell) {
@@ -147,7 +146,7 @@ export class LiquidityRemoveReq implements CellInputType {
     }
 
     toCellInput(): Array<CKBComponents.CellInput> {
-        return[{
+        return [{
             previousOutput: {
                 txHash: this.outPoint.tx_hash,
                 index: this.outPoint.index,

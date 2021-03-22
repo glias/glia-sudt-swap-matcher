@@ -1,6 +1,6 @@
-import { SwapBuyReq } from '../cells/swapBuyReq'
-import { SudtY } from '../cells/sudtY'
-import { Transformation } from './interfaces/transformation'
+import {SwapBuyReq} from '../cells/swapBuyReq'
+import {SudtY} from '../cells/sudtY'
+import {Transformation} from './interfaces/transformation'
 import {Ckb} from "../cells/ckb";
 
 /*
@@ -11,52 +11,52 @@ sudt_x -> sudt_y
  */
 export class SwapBuyTransformation implements Transformation {
 
-  //remaining all ckb amount,
-  //must be set outside due to tip
-  ckbChangeAmount:bigint
-  //result y amount
-  sudtYAmount: bigint
+    //remaining all ckb amount,
+    //must be set outside due to tip
+    ckbChangeAmount: bigint
+    //result y amount
+    sudtYAmount: bigint
 
-  request: SwapBuyReq
-  processed: boolean
-  skip: boolean
-  outputSudtY?: SudtY
-  outputCkb?: Ckb
+    request: SwapBuyReq
+    processed: boolean
+    skip: boolean
+    outputSudtY?: SudtY
+    outputCkb?: Ckb
 
-  constructor(request: SwapBuyReq) {
-    this.ckbChangeAmount = 0n
-    this.sudtYAmount = 0n
-    this.request = request
-    this.processed = false
-    this.skip = false
-  }
-
-  public minCapacity():bigint{
-    return SudtY.calcMinCapacity(this.request.originalUserLock) + Ckb.calcMinCapacity(this.request.originalUserLock)
-  }
-
-  process(): void {
-    if (!this.processed) {
-      let ckbLeft = this.ckbChangeAmount
-      this.outputSudtY = SudtY.from(this.sudtYAmount, this.request.originalUserLock)
-      ckbLeft -= this.outputSudtY.capacity
-      this.outputCkb = Ckb.from(ckbLeft, this.request.originalUserLock)
-
+    constructor(request: SwapBuyReq) {
+        this.ckbChangeAmount = 0n
+        this.sudtYAmount = 0n
+        this.request = request
+        this.processed = false
+        this.skip = false
     }
-    this.processed = true
-  }
 
-  toCellInput(): Array<CKBComponents.CellInput> {
-    return this.request.toCellInput()
-  }
+    public minCapacity(): bigint {
+        return SudtY.calcMinCapacity(this.request.originalUserLock) + Ckb.calcMinCapacity(this.request.originalUserLock)
+    }
 
-  toCellOutput(): Array<CKBComponents.CellOutput> {
-    this.process()
-    return [this.outputSudtY!.toCellOutput(),this.outputCkb!.toCellOutput()]
-  }
+    process(): void {
+        if (!this.processed) {
+            let ckbLeft = this.ckbChangeAmount
+            this.outputSudtY = SudtY.from(this.sudtYAmount, this.request.originalUserLock)
+            ckbLeft -= this.outputSudtY.capacity
+            this.outputCkb = Ckb.from(ckbLeft, this.request.originalUserLock)
 
-  toCellOutputData(): Array<string> {
-    this.process()
-    return [this.outputSudtY!.toCellOutputData(),this.outputCkb!.toCellOutputData()]
-  }
+        }
+        this.processed = true
+    }
+
+    toCellInput(): Array<CKBComponents.CellInput> {
+        return this.request.toCellInput()
+    }
+
+    toCellOutput(): Array<CKBComponents.CellOutput> {
+        this.process()
+        return [this.outputSudtY!.toCellOutput(), this.outputCkb!.toCellOutput()]
+    }
+
+    toCellOutputData(): Array<string> {
+        this.process()
+        return [this.outputSudtY!.toCellOutputData(), this.outputCkb!.toCellOutputData()]
+    }
 }

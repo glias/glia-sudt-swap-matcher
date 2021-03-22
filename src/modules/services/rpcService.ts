@@ -6,7 +6,7 @@ import { OutPoint } from '@ckb-lumos/base'
 import { scriptToHash } from '@nervosnetwork/ckb-sdk-utils'
 import JSONbig from 'json-bigint'
 import { workerLogger } from '../../utils/workerLogger'
-import { prepare0xPrefix, remove0xPrefix } from '../../utils/tools'
+import {prepare0xPrefix, remove0xPrefix} from '../../utils/tools'
 import { WitnessArgs } from '../../utils/blockchain'
 import {ETHSPVProof, MintTokenWitness} from '../../utils/witness'
 import * as rlp from 'rlp'
@@ -164,6 +164,7 @@ export default class RpcService {
     try {
       //this.#info('sendTransaction : ' + JSONbig.stringify(rawTx, null, 2))
       await this.#client.sendTransaction(rawTx)
+      //await waitTx(txHash,this.#client)
       return true
     } catch (e) {
       this.#error('rawTx: '+JSONbig.stringify(rawTx,null,2))

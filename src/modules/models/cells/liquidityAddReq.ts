@@ -8,7 +8,7 @@ import {
     prepare0xPrefix,
     scriptHash,
 } from '../../../utils/tools'
-import {SUDT_X_TYPE_SCRIPT_HASH,SUDT_Y_TYPE_SCRIPT_HASH} from '../../../utils/workEnv'
+import {SUDT_X_TYPE_SCRIPT_HASH, SUDT_Y_TYPE_SCRIPT_HASH} from '../../../utils/workEnv'
 import {CellInputType} from './interfaces/CellInputType'
 
 /*
@@ -153,7 +153,7 @@ export class LiquidityAddReq implements CellInputType {
     }
 
     static default(): LiquidityAddReq {
-        return new LiquidityAddReq(0n,0n, 0n, '', '','', 0n, 0n,  0n, 0n, 0n, defaultScript(), defaultOutPoint(), defaultOutPoint())
+        return new LiquidityAddReq(0n, 0n, 0n, '', '', '', 0n, 0n, 0n, 0n, 0n, defaultScript(), defaultOutPoint(), defaultOutPoint())
     }
 
     static validateX(cellX: Cell) {
@@ -190,13 +190,13 @@ export class LiquidityAddReq implements CellInputType {
     }
 
     // for only y
-    static getReqSudtXCellLockHash(cell:Cell) : string|null{
+    static getReqSudtXCellLockHash(cell: Cell): string | null {
         const args = cell.cell_output.lock.args.substring(2)
 
-        if(args.length != 97*2){
+        if (args.length != 97 * 2) {
             return null
         }
-        return args.substring(130,194)
+        return args.substring(130, 194)
     }
 
     toCellInput(): Array<CKBComponents.CellInput> {

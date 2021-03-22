@@ -118,7 +118,7 @@ export class SwapBuyReq implements CellInputType {
     }
 
     static default(): SwapBuyReq {
-        return new SwapBuyReq(0n, 0n, '', '', '',0n,  0n, 0n, defaultScript(), defaultOutPoint())
+        return new SwapBuyReq(0n, 0n, '', '', '', 0n, 0n, 0n, defaultScript(), defaultOutPoint())
     }
 
     static getUserLockHash(cell: Cell): string {

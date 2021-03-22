@@ -10,7 +10,7 @@ export const POOL_URL: string = process.env.POOL_URL!
 export const MNEMONIC: string = process.env.MNEMONIC!
 
 export const COOPERATOR_PRIVATE_KEY: string = process.env.COOPERATOR_PRIVATE_KEY!
-export const COOPERATOR_FROM_BLOCK = process.env.COOPERATOR_FROM_BLOCK?process.env.COOPERATOR_FROM_BLOCK:'0x00'
+export const COOPERATOR_FROM_BLOCK = process.env.COOPERATOR_FROM_BLOCK ? process.env.COOPERATOR_FROM_BLOCK : '0x00'
 
 export const SECP256K1_TX_HASH = '0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d37'
 export const SECP256K1_TX_INDEX = '0x0'
