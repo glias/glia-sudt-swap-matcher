@@ -26,4 +26,5 @@ export const INDEXER_MYSQL_DATABASE = process.env.INDEXER_MYSQL_DATABASE!
 
 export const BLOCK_MINER_FEE = process.env.BLOCK_MINER_FEE ? BigInt(process.env.BLOCK_MINER_FEE) : 100000n
 
-export const WORKER_TRANSFER_BALANCE = process.env.WORKER_TRANSFER_BALANCE ? BigInt(process.env.WORKER_TRANSFER_BALANCE) : 61n * 100000000n
+export const WORKER_TRANSFER_BALANCE = process.env.WORKER_TRANSFER_BALANCE ? BigInt(process.env.WORKER_TRANSFER_BALANCE) : 500n * 100000000n
+export const DERIVE_RANDOM = process.env.DERIVE_RANDOM ? BigInt(process.env.DERIVE_RANDOM) : 0n
