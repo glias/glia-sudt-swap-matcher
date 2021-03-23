@@ -131,7 +131,7 @@ export async function waitTx(txHash : CKBComponents.Hash, rpc: Rpc) {
     while (true) {
         try{
             const res: CKBComponents.TransactionWithStatus = await rpc.getTransaction(txHash)
-            if (res.txStatus.status === CKBComponents.TransactionStatus.Committed) {
+            if (res.txStatus.status === 'committed') {
                 break
             }
         }catch (e){
