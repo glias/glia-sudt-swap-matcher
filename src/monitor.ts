@@ -1,4 +1,4 @@
-import { container } from './container'
+import { container } from './sudt2sudt/container'
 import { InversifyExpressServer } from 'inversify-express-utils'
 import helmet from 'helmet'
 import cors from 'cors'
