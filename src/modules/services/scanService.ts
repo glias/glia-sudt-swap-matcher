@@ -120,6 +120,7 @@ export default class ScanService {
     const swapBuyReqCollector = new CellCollector(this.#knex, {
       toBlock: tip,
       ...SWAP_BUY_REQ_QUERY_OPTION,
+      order: 'desc',
     })
     const swapBuyReqs: SwapBuyReq[] = []
     for await (const cell of swapBuyReqCollector.collect()) {
@@ -141,6 +142,7 @@ export default class ScanService {
     const swapSellReqCollector = new CellCollector(this.#knex, {
       toBlock: tip,
       ...SWAP_SELL_REQ_QUERY_OPTION,
+      order: 'desc',
     })
     const swapSellReqs: SwapSellReq[] = []
     for await (const cell of swapSellReqCollector.collect()) {
@@ -163,6 +165,7 @@ export default class ScanService {
     const liquidityAddXReqCollector = new CellCollector(this.#knex, {
       toBlock: tip,
       ...LIQUIDITY_ADD_X_REQ_QUERY_OPTION,
+      order: 'desc',
     })
     const liquidityAddXReqs :Map<string,Cell>= new Map<string, Cell>();
     for await (const cellX of liquidityAddXReqCollector.collect()) {
@@ -174,6 +177,7 @@ export default class ScanService {
     const liquidityAddYReqCollector = new CellCollector(this.#knex, {
       toBlock: tip,
       ...LIQUIDITY_ADD_Y_REQ_QUERY_OPTION,
+      order: 'desc',
     })
     const liquidityAddReqs : Array<LiquidityAddReq> = [];
     for await (const cellY of liquidityAddYReqCollector.collect()) {
@@ -205,6 +209,7 @@ export default class ScanService {
     const liquidityRemoveReqCollector = new CellCollector(this.#knex, {
       toBlock: tip,
       ...LIQUIDITY_REMOVE_REQ_QUERY_OPTION,
+      order: 'desc',
     })
     for await (const cell of liquidityRemoveReqCollector.collect()) {
       const script = await this.#rpcService.getLockScript(cell.out_point!, LiquidityRemoveReq.getUserLockHash(cell))
@@ -226,6 +231,7 @@ export default class ScanService {
     const MatcherCollector = new CellCollector(this.#knex, {
       toBlock: tip,
       ...MATCHER_QUERY_OPTION,
+      order: 'desc',
     })
     let matcherChange: MatcherChange | null = null
     for await (const cell of MatcherCollector.collect()) {
@@ -243,6 +249,7 @@ export default class ScanService {
     const infoCellCollector = new CellCollector(this.#knex, {
       toBlock: tip,
       ...INFO_QUERY_OPTION,
+      order: 'desc',
     })
     let info: Info | null = null
     for await (const cell of infoCellCollector.collect()) {
@@ -254,6 +261,7 @@ export default class ScanService {
     const poolXCellCollector = new CellCollector(this.#knex, {
       toBlock: tip,
       ...POOL_X_QUERY_OPTION,
+      order: 'desc',
     })
     let poolX: PoolX | null = null
     for await (const cell of poolXCellCollector.collect()) {
@@ -265,6 +273,7 @@ export default class ScanService {
     const poolYCellCollector = new CellCollector(this.#knex, {
       toBlock: tip,
       ...POOL_Y_QUERY_OPTION,
+      order: 'desc',
     })
     let poolY: PoolY | null = null
     for await (const cell of poolYCellCollector.collect()) {

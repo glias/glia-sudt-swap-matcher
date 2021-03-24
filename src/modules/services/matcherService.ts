@@ -126,6 +126,15 @@ export default class MatcherService {
             return
         }
 
+        if(matchRecord.info.sudtYReserve < yGot){
+            this.#info(swapBuyXform.request.getOutPoint(),
+                'process swap buy, txHash: ' + swapBuyXform.request.outPoint.tx_hash +
+                `matchRecord.info.sudtYReserve ${matchRecord.info.sudtYReserve} < yGot ${yGot}`)
+
+            swapBuyXform.skip = true
+            return
+        }
+
 
         matchRecord.matcherChange.capacity += swapBuyXform.request.tips
         // skipt sudt change
@@ -198,6 +207,15 @@ export default class MatcherService {
             return
         }
 
+        if (matchRecord.info.sudtXReserve < xGot) {
+            this.#info(swapSellXform.request.getOutPoint(),
+                'process swap sell, txHash: ' + swapSellXform.request.outPoint.tx_hash +
+                `matchRecord.info.sudtXReserve ${matchRecord.info.sudtXReserve} < xGot ${xGot}`)
+
+            swapSellXform.skip = true
+            return
+        }
+
 
         matchRecord.matcherChange.capacity += swapSellXform.request.tips
 
@@ -229,6 +247,17 @@ export default class MatcherService {
         matchRecord: MatchRecord,
         liquidityRemoveXform: LiquidityRemoveTransformation,
     ): void => {
+
+        //removed lpt overflow
+        if(matchRecord.info.totalLiquidity - liquidityRemoveXform.request.lptAmount < 0){
+            this.#info(liquidityRemoveXform.request.getOutPoint(),
+                'process liquidity remove, txHash: ' + liquidityRemoveXform.request.outPoint.tx_hash +
+                `matchRecord.info.totalLiquidity ${matchRecord.info.totalLiquidity} - liquidityRemoveXform.request.lptAmount ${liquidityRemoveXform.request.lptAmount} < 0`,
+            )
+
+            liquidityRemoveXform.skip = true
+            return
+        }
 
         if (liquidityRemoveXform.request.lptAmount - liquidityRemoveXform.request.tipsLp <= 0) {
             this.#info(liquidityRemoveXform.request.getOutPoint(),
@@ -263,6 +292,16 @@ export default class MatcherService {
             this.#info(liquidityRemoveXform.request.getOutPoint(),
                 'process liquidity remove, txHash: ' + liquidityRemoveXform.request.outPoint.tx_hash +
                 ` liquidityRemoveXform.request.capacity ${liquidityRemoveXform.request.capacity} - liquidityRemoveXform.request.tips ${liquidityRemoveXform.request.tips} != liquidityRemoveXform.minCapacity() ${liquidityRemoveXform.minCapacity()} + liquidityRemoveXform.request.tips ${liquidityRemoveXform.request.tips}`,
+            )
+
+            liquidityRemoveXform.skip = true
+            return
+        }
+
+        if(matchRecord.info.sudtXReserve < withdrawnSudtX || matchRecord.info.sudtYReserve < withdrawnSudtY){
+            this.#info(liquidityRemoveXform.request.getOutPoint(),
+                'process liquidity remove, txHash: ' + liquidityRemoveXform.request.outPoint.tx_hash +
+                `matchRecord.info.sudtXReserve ${matchRecord.info.sudtXReserve} < withdrawnSudtX ${withdrawnSudtX} || matchRecord.info.sudtYReserve ${matchRecord.info.sudtYReserve} < withdrawnSudtY ${withdrawnSudtY}`,
             )
 
             liquidityRemoveXform.skip = true

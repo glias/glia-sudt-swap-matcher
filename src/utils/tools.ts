@@ -36,14 +36,23 @@ export const leHexToBigIntUint64 = (rawHexString: string): bigint => {
 }
 
 export const Uint128BigIntToLeHex = (u128: bigint): string => {
+    if(u128<0){
+        throw new Error(`Uint128BigIntToLeHex, input: ${u128}`)
+    }
     return utils.toBigUInt128LE(u128)
 }
 
 export const Uint64BigIntToLeHex = (u64: bigint): string => {
+    if(u64<0){
+        throw new Error(`Uint64BigIntToLeHex, input: ${u64}`)
+    }
     return utils.toBigUInt64LE(u64)
 }
 
 export const Uint64BigIntToHex = (u64: bigint): string => {
+    if(u64<0){
+        throw new Error(`Uint64BigIntToHex, input: ${u64}`)
+    }
     return `0x${u64.toString(16)}`
 }
 
