@@ -1,14 +1,12 @@
-import {INSTANCE_NAME, NODE_ENV} from './sudt2sudt/utils/workerEnv'
+import {INSTANCE_NAME, NODE_ENV} from './utils/workerEnv'
 
 import 'reflect-metadata'
-import boostrap from './sudt2sudt/bootstrap'
-import { container, modules } from './sudt2sudt/container'
-import { workerLogger } from './sudt2sudt/utils/workerLogger'
-import TaskService from './sudt2sudt/modules/services/taskService'
-// @ts-ignore
-import { kickupMonitor } from './monitor'
+import boostrap from './bootstrap'
+import { container, modules } from './container'
+import { workerLogger } from './utils/workerLogger'
+import TaskService from './modules/services/taskService'
 
-export default class Sudt2SudtWorker {
+export default class Ckb2SudtWorker {
   #ready = false
 
   #log = (msg: string) => {
@@ -41,9 +39,9 @@ export default class Sudt2SudtWorker {
 
     await this.#bootstrap()
 
-    await Sudt2SudtWorker.taskService.start()
+    await Ckb2SudtWorker.taskService.start()
     this.#log(`Glia-Swap-Matcher ${INSTANCE_NAME} started`)
   }
 }
 
-new Sudt2SudtWorker().run()
+new Ckb2SudtWorker().run()

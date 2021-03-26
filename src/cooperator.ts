@@ -256,7 +256,7 @@ export default class Cooperator {
                 'SWAP_REQ_LOCK_HASH_TYPE':CKB_SUDT_SWAP_REQ_LOCK_HASH_TYPE,
                 'SWAP_REQ_LOCK_ARGS_VERSION':CKB_SUDT_SWAP_REQ_LOCK_ARGS_VERSION,
             }
-            let file: string = path.join(__dirname, 'ckb2SudtWorker.ts')
+            let file: string = path.join(__dirname, 'ckb2sudt/ckb2SudtWorker.ts')
             let env = process.env
             Object.assign(env, env_work)
             return fork(file, {
@@ -293,7 +293,7 @@ export default class Cooperator {
                 'SWAP_REQ_LOCK_HASH_TYPE':SUDT_SUDT_SWAP_REQ_LOCK_HASH_TYPE,
                 'SWAP_REQ_LOCK_ARGS_VERSION':SUDT_SUDT_SWAP_REQ_LOCK_ARGS_VERSION,
             }
-            let file: string = path.join(__dirname, 'sudt2SudtWorker.ts')
+            let file: string = path.join(__dirname, 'sudt2sudt/sudt2SudtWorker.ts')
             let env = process.env
             Object.assign(env, env_work)
             return fork(file, {
