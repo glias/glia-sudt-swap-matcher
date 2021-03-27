@@ -16,7 +16,7 @@ There is a template .env example named cooperator.env.example under the root of 
 
 You need a .env config to support necessary information.
 
-By the way, Glia Swap Matcher uses 'dotenv' to collect information, you can deliver config by supported way of 'dotenv'.
+By the way, Glia Swap Matcher uses 'dotenv' to collect information, you can deliver config by supported ways of 'dotenv'.
 You can use DOTENV_CONFIG_PATH to point to your config .env file.
 
 ### Why We need Glia Swap Matcher?
@@ -65,10 +65,16 @@ sudt2sudt/modules/models for SUDT<>SUDT pair.
 
 Here is a brief view:
 
-Info cell: contains all information of an AMM pool.
-Pool cell: contains ckb and SUDT reserves. ckb2sudt pair has one pool to hold CKB in capacity and SUDT in cell data, and sudt2sudt has 2 pools for each SUDT.
-Liquidity request cell: contains liquidity request information. Like init, add and remove for liquidity.
-Swap request cell: contains swap request information. Like buy and sell CKB/SUDT.
-Matcher change cell: the cell matcher uses to get tips from users' requests.
-SUDT cell: the SUDT the requests output.E.g., hold LP tokens for adding liquidity and SUDT tokens for swap.
-Ckb cell: contains CKB change for requests, like SUDT cell. It may contain request outputs or request change.
+* Info cell: contains all information of an AMM pool.
+
+* Pool cell: contains ckb and SUDT reserves. ckb2sudt pair has one pool to hold CKB in capacity and SUDT in cell data, and sudt2sudt has 2 pools for each SUDT.
+
+* Liquidity request cell: contains liquidity request information. Like init, add and remove for liquidity.
+
+* Swap request cell: contains swap request information. Like buy and sell CKB/SUDT.
+
+* Matcher change cell: the cell matcher uses to get tips from users' requests.
+
+* SUDT cell: the SUDT the requests output.E.g., hold LP tokens for adding liquidity and SUDT tokens for swap.
+
+* Ckb cell: contains CKB change for requests, like SUDT cell. It may contain request outputs or request change.
