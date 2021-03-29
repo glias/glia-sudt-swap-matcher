@@ -33,9 +33,9 @@ type: null for buy - 0 bytes
 lock: - 138 bytes
     code: SWAP_REQ_LOCK_CODE_HASH - 32 bytes + 1 byte
     args: sudt_type_hash (32 bytes, 0..32) |
-		  version (u8, 1 byte, 32..33) |
-		  amountOutMin (u128, 16 bytes, 33..49) |
-		  user_lock_hash (32 bytes, 49..81) |
+		  user_lock_hash (32 bytes, 32..64) |
+		  version (u8, 1 byte, 64..65) |
+		  amountOutMin (u128, 16 bytes, 65..81) |
 		  tips (8 bytes, 81..89) |
 		  tips_sudt (16 bytes, 89..105)
  */
@@ -96,11 +96,17 @@ export class SwapBuyReq implements CellInputType {
     let capacity = BigInt(cell.cell_output.capacity)
 
     const args = cell.cell_output.lock.args.substring(2)
+
     let sudtTypeHash = args.substring(0, 64)
-    let version = args.substring(64, 66)
-    let amountOutMin = leHexToBigIntUint128(args.substring(66, 98))
-    let userLockHash = args.substring(98, 162)
+
+    let version = args.substring(64, 128)
+
+    let amountOutMin = leHexToBigIntUint128(args.substring(128, 130))
+
+    let userLockHash = args.substring(130, 162)
+
     let tips = leHexToBigIntUint64(args.substring(162, 178))
+
     let tips_sudt = leHexToBigIntUint128(args.substring(178, 210))
 
     let outPoint = cell.out_point!

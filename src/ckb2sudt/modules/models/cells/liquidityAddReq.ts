@@ -22,10 +22,10 @@ type: asset_sudt_type - 65 bytes
 lock: - 146 bytes
     code: LIQUIDITY_REQ_LOCK_CODE_HASH - 32 bytes + 1 byte
     args: info_type_hash_32 (32 bytes, 0..32) |
-		  version (u8, 1 byte, 32..33) |
-		  sudtMin (u128, 16 bytes, 33..49) |
-		  ckbMin (u64, 8 bytes, 49..57) |
-		  user_lock_hash (32 bytes, 57..89) |
+          user_lock_hash (32 bytes, 32..64) |
+		  version (u8, 1 byte, 64..65) |
+		  sudtMin (u128, 16 bytes, 65..81) |
+		  ckbMin (u64, 8 bytes, 81..89) |
 		  tips (8 bytes, 89..97) |
 		  tips_sudt (16 bytes, 97..113)
 
@@ -40,13 +40,13 @@ export class LiquidityAddReq implements CellInputType {
 
   infoTypeHash: string
 
+  public userLockHash: string
+
   version: string
 
   sudtMin: bigint
 
   ckbMin: bigint
-
-  public userLockHash: string
 
   tips: bigint
   tipsSudt: bigint
@@ -96,12 +96,13 @@ export class LiquidityAddReq implements CellInputType {
 
     const args = cell.cell_output.lock.args.substring(2)
     let infoTypeHash = args.substring(0, 64)
-    let version = args.substring(64, 66)
 
-    let sudtMin = leHexToBigIntUint128(args.substring(66, 98))
-    let ckbMin = leHexToBigIntUint64(args.substring(98, 114))
+    let userLockHash = args.substring(64, 128)
 
-    let userLockHash = args.substring(114, 178)
+    let version = args.substring(128, 130)
+
+    let sudtMin = leHexToBigIntUint128(args.substring(130, 162))
+    let ckbMin = leHexToBigIntUint64(args.substring(162, 178))
 
     let tips = leHexToBigIntUint64(args.substring(178, 194))
     let tipsSudt = leHexToBigIntUint128(args.substring(194, 226))
