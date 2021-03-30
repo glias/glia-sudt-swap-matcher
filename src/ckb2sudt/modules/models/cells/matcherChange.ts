@@ -1,8 +1,8 @@
-import { Cell, OutPoint } from '@ckb-lumos/base'
-import { defaultOutPoint, Uint64BigIntToHex } from '../../../../tools'
-import { CellOutputType } from './interfaces/CellOutputType'
-import { CellInputType } from './interfaces/CellInputType'
-import { BLOCK_MINER_FEE, MATCHER_LOCK_SCRIPT } from '../../../utils/workerEnv'
+import {Cell, OutPoint} from '@ckb-lumos/base'
+import {defaultOutPoint, Uint64BigIntToHex} from '../../../../tools'
+import {CellOutputType} from './interfaces/CellOutputType'
+import {CellInputType} from './interfaces/CellInputType'
+import {BLOCK_MINER_FEE, MATCHER_LOCK_SCRIPT} from '../../../utils/workerEnv'
 
 // for tips, matcherChange only hold ckbs
 // thought matcherChange is as same as Ckb, we give it a special class
@@ -15,89 +15,89 @@ type: - null
 lock: user_lock 65
  */
 export class MatcherChange implements CellInputType, CellOutputType {
-  static MATCHER_CHANGE_FIXED_CAPACITY = BigInt(73 * 10 ** 8)
+    static MATCHER_CHANGE_FIXED_CAPACITY = BigInt(73 * 10 ** 8)
 
-  capacity: bigint
+    capacity: bigint
 
-  readonly ckbReserveOriginal: bigint
+    readonly ckbReserveOriginal: bigint
 
-  outPoint: OutPoint
+    outPoint: OutPoint
 
-  constructor(capacity: bigint, outPoint: OutPoint) {
-    this.capacity = capacity
-    this.ckbReserveOriginal = capacity
+    constructor(capacity: bigint, outPoint: OutPoint) {
+        this.capacity = capacity
+        this.ckbReserveOriginal = capacity
 
-    this.outPoint = outPoint
-  }
-
-  reduceBlockMinerFee = () => {
-    this.capacity -= BLOCK_MINER_FEE
-
-    if(this.capacity < MatcherChange.MATCHER_CHANGE_FIXED_CAPACITY){
-      console.log('MatcherChange is lower than MATCHER_CHANGE_FIXED_CAPACITY')
-      this.capacity = MatcherChange.MATCHER_CHANGE_FIXED_CAPACITY
-    }
-  }
-
-  static validate(cell: Cell): boolean {
-    if (cell.data !== '0x') {
-      return false
+        this.outPoint = outPoint
     }
 
-    if (!cell.out_point) {
-      return false
+    reduceBlockMinerFee = () => {
+        this.capacity -= BLOCK_MINER_FEE
+
+        if (this.capacity < MatcherChange.MATCHER_CHANGE_FIXED_CAPACITY) {
+            console.log('MatcherChange is lower than MATCHER_CHANGE_FIXED_CAPACITY')
+            this.capacity = MatcherChange.MATCHER_CHANGE_FIXED_CAPACITY
+        }
     }
 
-    return true
-  }
+    static validate(cell: Cell): boolean {
+        if (cell.data !== '0x') {
+            return false
+        }
 
-  static fromCell(cell: Cell): MatcherChange | null {
-    if (!MatcherChange.validate(cell)) {
-      return null
+        if (!cell.out_point) {
+            return false
+        }
+
+        return true
     }
-    let capacity = BigInt(cell.cell_output.capacity)
-    let outPoint = cell.out_point!
-    return new MatcherChange(capacity, outPoint)
-  }
 
-  static default(): MatcherChange {
-    return new MatcherChange(0n, defaultOutPoint())
-  }
-
-  /*static cloneWith(matcherChange: MatcherChange, txHash: string, index: string): MatcherChange {
-    matcherChange = JSONbig.parse(JSONbig.stringify(matcherChange))
-    matcherChange.outPoint.tx_hash = txHash
-    matcherChange.outPoint.index = index
-    return matcherChange
-  }*/
-
-  toCellInput(): CKBComponents.CellInput {
-    return {
-      previousOutput: {
-        txHash: this.outPoint.tx_hash,
-        index: this.outPoint.index,
-      },
-      since: '0x0',
+    static fromCell(cell: Cell): MatcherChange | null {
+        if (!MatcherChange.validate(cell)) {
+            return null
+        }
+        let capacity = BigInt(cell.cell_output.capacity)
+        let outPoint = cell.out_point!
+        return new MatcherChange(capacity, outPoint)
     }
-  }
 
-  toCellOutput(): CKBComponents.CellOutput {
-    return {
-      capacity: Uint64BigIntToHex(this.capacity),
-      type: null,
-      lock: MATCHER_LOCK_SCRIPT,
+    static default(): MatcherChange {
+        return new MatcherChange(0n, defaultOutPoint())
     }
-  }
 
-  toCellOutputData(): string {
-    return `0x`
-  }
+    /*static cloneWith(matcherChange: MatcherChange, txHash: string, index: string): MatcherChange {
+      matcherChange = JSONbig.parse(JSONbig.stringify(matcherChange))
+      matcherChange.outPoint.tx_hash = txHash
+      matcherChange.outPoint.index = index
+      return matcherChange
+    }*/
 
-  getOutPoint(): string {
-    return `${this.outPoint.tx_hash}-${this.outPoint.index}`
-  }
+    toCellInput(): CKBComponents.CellInput {
+        return {
+            previousOutput: {
+                txHash: this.outPoint.tx_hash,
+                index: this.outPoint.index,
+            },
+            since: '0x0',
+        }
+    }
 
-  static fromJSON(source: Object): MatcherChange {
-    return Object.assign(MatcherChange.default(), source);
-  }
+    toCellOutput(): CKBComponents.CellOutput {
+        return {
+            capacity: Uint64BigIntToHex(this.capacity),
+            type: null,
+            lock: MATCHER_LOCK_SCRIPT,
+        }
+    }
+
+    toCellOutputData(): string {
+        return `0x`
+    }
+
+    getOutPoint(): string {
+        return `${this.outPoint.tx_hash}-${this.outPoint.index}`
+    }
+
+    static fromJSON(source: Object): MatcherChange {
+        return Object.assign(MatcherChange.default(), source);
+    }
 }

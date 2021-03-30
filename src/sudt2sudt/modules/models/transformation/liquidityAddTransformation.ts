@@ -84,12 +84,12 @@ export class LiquidityAddTransformation implements Transformation {
             this.outputLpt = Lpt.from(this.lptAmount, this.request.originalUserLock)
             ckbLeft -= this.outputLpt.capacity
 
-            if(this.changeType == 'x'){
+            if (this.changeType == 'x') {
                 this.outputSudtXOrSudtY = SudtX.from(
                     this.sudtXChangeAmount,
                     this.request.originalUserLock,
                 )
-            }else{
+            } else {
                 this.outputSudtXOrSudtY = SudtY.from(
                     this.sudtYChangeAmount,
                     this.request.originalUserLock
@@ -115,7 +115,7 @@ export class LiquidityAddTransformation implements Transformation {
     toCellOutputData(): Array<string> {
         this.process()
 
-        return [this.outputLpt!.toCellOutputData(), this.outputSudtXOrSudtY!.toCellOutputData(),this.outputCkb!.toCellOutputData()]
+        return [this.outputLpt!.toCellOutputData(), this.outputSudtXOrSudtY!.toCellOutputData(), this.outputCkb!.toCellOutputData()]
     }
 
 

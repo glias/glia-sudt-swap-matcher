@@ -126,7 +126,7 @@ export default class MatcherService {
             return
         }
 
-        if(matchRecord.info.sudtYReserve < yGot){
+        if (matchRecord.info.sudtYReserve < yGot) {
             this.#info(swapBuyXform.request.getOutPoint(),
                 'process swap buy, txHash: ' + swapBuyXform.request.outPoint.tx_hash +
                 `matchRecord.info.sudtYReserve ${matchRecord.info.sudtYReserve} < yGot ${yGot}`)
@@ -249,7 +249,7 @@ export default class MatcherService {
     ): void => {
 
         //removed lpt overflow
-        if(matchRecord.info.totalLiquidity - liquidityRemoveXform.request.lptAmount < 0){
+        if (matchRecord.info.totalLiquidity - liquidityRemoveXform.request.lptAmount < 0) {
             this.#info(liquidityRemoveXform.request.getOutPoint(),
                 'process liquidity remove, txHash: ' + liquidityRemoveXform.request.outPoint.tx_hash +
                 `matchRecord.info.totalLiquidity ${matchRecord.info.totalLiquidity} - liquidityRemoveXform.request.lptAmount ${liquidityRemoveXform.request.lptAmount} < 0`,
@@ -298,7 +298,7 @@ export default class MatcherService {
             return
         }
 
-        if(matchRecord.info.sudtXReserve < withdrawnSudtX || matchRecord.info.sudtYReserve < withdrawnSudtY){
+        if (matchRecord.info.sudtXReserve < withdrawnSudtX || matchRecord.info.sudtYReserve < withdrawnSudtY) {
             this.#info(liquidityRemoveXform.request.getOutPoint(),
                 'process liquidity remove, txHash: ' + liquidityRemoveXform.request.outPoint.tx_hash +
                 `matchRecord.info.sudtXReserve ${matchRecord.info.sudtXReserve} < withdrawnSudtX ${withdrawnSudtX} || matchRecord.info.sudtYReserve ${matchRecord.info.sudtYReserve} < withdrawnSudtY ${withdrawnSudtY}`,
@@ -374,23 +374,23 @@ export default class MatcherService {
         let yUsed = 0n
         let xChange = 0n
         let yChange = 0n
-        let changeType : ChangeType = 'x'
+        let changeType: ChangeType = 'x'
         //first we try to exhaust x
         let yNeed = xIn * matchRecord.info.sudtYReserve / matchRecord.info.sudtXReserve + 1n
-        if(yNeed <= yIn){
+        if (yNeed <= yIn) {
             // exhaust x and y remains
             // xchange==0, ychange maybe =0, maybe not
-            lptGot = xIn * matchRecord.info.totalLiquidity  / matchRecord.info.sudtXReserve + 1n
+            lptGot = xIn * matchRecord.info.totalLiquidity / matchRecord.info.sudtXReserve + 1n
             xUsed = xIn
             yUsed = yNeed
             yChange = yIn - yNeed
             changeType = 'y'
 
-        }else{
+        } else {
             // exhaust y and x remains
             // ychange==0 ,xchange maybe =0, maybe not
             let xNeed = yIn * matchRecord.info.sudtXReserve / matchRecord.info.sudtYReserve + 1n
-            lptGot = yIn * matchRecord.info.totalLiquidity  / matchRecord.info.sudtYReserve + 1n
+            lptGot = yIn * matchRecord.info.totalLiquidity / matchRecord.info.sudtYReserve + 1n
             xUsed = xNeed
             yUsed = yIn
             xChange = xIn - xNeed
@@ -398,7 +398,7 @@ export default class MatcherService {
 
             // if xChange === 0 , empty sudt cell will be composed
             // if xChange <0, which is really rare, the case return
-            if(xChange <0){
+            if (xChange < 0) {
                 this.#info(liquidityAddXform.request.getOutPoint(),
                     'process liquidity add, txHash: ' + liquidityAddXform.request.outPointX.tx_hash +
                     `calce both side yNedd > yIn and xChange < 0, the case is really rare`,
@@ -410,7 +410,7 @@ export default class MatcherService {
         }
 
 
-        if(liquidityAddXform.request.capacity - liquidityAddXform.request.tips < liquidityAddXform.minCapacity(changeType)){
+        if (liquidityAddXform.request.capacity - liquidityAddXform.request.tips < liquidityAddXform.minCapacity(changeType)) {
             this.#info(liquidityAddXform.request.getOutPoint(),
                 'process liquidity add, txHash: ' + liquidityAddXform.request.outPointX.tx_hash +
                 `liquidityAddXform.request.capacity ${liquidityAddXform.request.capacity} - liquidityAddXform.request.tips ${liquidityAddXform.request.tips} < liquidityAddXform.minCapacity(changeType) ${liquidityAddXform.minCapacity(changeType)}`,
@@ -420,7 +420,7 @@ export default class MatcherService {
             return
         }
 
-        if( xUsed < liquidityAddXform.request.sudtXMin){
+        if (xUsed < liquidityAddXform.request.sudtXMin) {
             this.#info(liquidityAddXform.request.getOutPoint(),
                 'process liquidity add, txHash: ' + liquidityAddXform.request.outPointX.tx_hash +
                 `xUsed ${xUsed} < liquidityAddXform.request.sudtXMin ${liquidityAddXform.request.sudtXMin}`,
@@ -428,7 +428,7 @@ export default class MatcherService {
             liquidityAddXform.skip = true
             return
         }
-        if( yUsed < liquidityAddXform.request.sudtYMin){
+        if (yUsed < liquidityAddXform.request.sudtYMin) {
             this.#info(liquidityAddXform.request.getOutPoint(),
                 'process liquidity add, txHash: ' + liquidityAddXform.request.outPointX.tx_hash +
                 `yUsed ${yUsed} < liquidityAddXform.request.sudtYMin ${liquidityAddXform.request.sudtYMin}`,
@@ -494,7 +494,7 @@ export default class MatcherService {
         let yIn = liquidityInitXform.request.sudtYAmount - liquidityInitXform.request.tipsSudtY
 
         let ckbChange = liquidityInitXform.request.capacity - liquidityInitXform.request.tips
-        if(ckbChange < liquidityInitXform.minCapacity()){
+        if (ckbChange < liquidityInitXform.minCapacity()) {
             this.#info(liquidityInitXform.request.getOutPoint(),
                 'process liquidity init, txHash: ' + liquidityInitXform.request.outPointX.tx_hash +
                 `liquidityInitXform.request.capacity ${liquidityInitXform.request.capacity} - liquidityInitXform.request.tips ${liquidityInitXform.request.tips} < liquidityInitXform.minCapacity() ${liquidityInitXform.minCapacity()}`,

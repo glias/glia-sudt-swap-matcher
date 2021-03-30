@@ -34,7 +34,7 @@ export class MatcherChange implements CellInputType, CellOutputType {
         this.capacity -= BLOCK_MINER_FEE
 
         if (this.capacity < MatcherChange.MATCHER_CHANGE_FIXED_CAPACITY) {
-           throw new Error('MatcherChange is lower than MATCHER_CHANGE_FIXED_CAPACITY')
+            throw new Error('MatcherChange is lower than MATCHER_CHANGE_FIXED_CAPACITY')
         }
     }
 

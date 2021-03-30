@@ -1,8 +1,8 @@
-import { LiquidityAddReq } from '../cells/liquidityAddReq'
-import { Lpt } from '../cells/lpt'
-import { Sudt } from '../cells/sudt'
-import { Ckb } from '../cells/ckb'
-import { Transformation } from './interfaces/transformation'
+import {LiquidityAddReq} from '../cells/liquidityAddReq'
+import {Lpt} from '../cells/lpt'
+import {Sudt} from '../cells/sudt'
+import {Ckb} from '../cells/ckb'
+import {Transformation} from './interfaces/transformation'
 
 /*
 this res contains 2 cell
@@ -18,82 +18,83 @@ matcher_in_cell(ckb)                    matcher_out_cell(ckb)
 [add_liquidity_cell]                    [liquidity_cell + (sudt_cell或者ckb_cell)]
  */
 
-type changeType = 'ckb'|'sudt'
+type changeType = 'ckb' | 'sudt'
 
 export class LiquidityAddTransformation implements Transformation {
 
 
-  // for liquidity cell
-  lptAmount: bigint
+    // for liquidity cell
+    lptAmount: bigint
 
-  // for change cell's ckb change, include all capacity for hold 2 cells
-  capacityChangeAmount: bigint
-  sudtChangeAmount: bigint
+    // for change cell's ckb change, include all capacity for hold 2 cells
+    capacityChangeAmount: bigint
+    sudtChangeAmount: bigint
 
-  request: LiquidityAddReq
-  processed: boolean
-  skip: boolean
+    request: LiquidityAddReq
+    processed: boolean
+    skip: boolean
 
-  outputLpt?: Lpt
-  outputSudtOrCkb?: Sudt | Ckb
-  constructor(request: LiquidityAddReq) {
-    this.request = request
-    this.lptAmount = 0n
-    this.sudtChangeAmount = 0n
-    this.capacityChangeAmount = 0n
-    this.processed = false
-    this.skip = false
-  }
+    outputLpt?: Lpt
+    outputSudtOrCkb?: Sudt | Ckb
 
-  minCapacity(which: changeType): bigint {
-    if(which === 'ckb'){
-      return this.minCapacityForCkbChange()
-    }else{
-      return this.minCapacityForSudtChange()
+    constructor(request: LiquidityAddReq) {
+        this.request = request
+        this.lptAmount = 0n
+        this.sudtChangeAmount = 0n
+        this.capacityChangeAmount = 0n
+        this.processed = false
+        this.skip = false
     }
-  }
 
-  private minCapacityForSudtChange():bigint{
-    return Sudt.calcMinCapacity(this.request.originalUserLock) + Lpt.calcMinCapacity(this.request.originalUserLock)
-  }
-
-
-  private minCapacityForCkbChange():bigint{
-    return Ckb.calcMinCapacity(this.request.originalUserLock) + Lpt.calcMinCapacity(this.request.originalUserLock)
-  }
-
-  process(): void {
-    if (!this.processed) {
-      this.outputLpt = Lpt.from(this.lptAmount, this.request.originalUserLock)
-      if (this.sudtChangeAmount === 0n) {
-        // compose ckb
-        this.outputSudtOrCkb = Ckb.from(
-          this.capacityChangeAmount - Lpt.calcMinCapacity( this.request.originalUserLock),
-          this.request.originalUserLock,
-        )
-      } else {
-        // compose sudt
-        this.outputSudtOrCkb = Sudt.from(this.sudtChangeAmount, this.request.originalUserLock)
-      }
+    minCapacity(which: changeType): bigint {
+        if (which === 'ckb') {
+            return this.minCapacityForCkbChange()
+        } else {
+            return this.minCapacityForSudtChange()
+        }
     }
-    this.processed = true
-  }
 
-  toCellInput(): CKBComponents.CellInput {
-    return this.request.toCellInput()
-  }
+    private minCapacityForSudtChange(): bigint {
+        return Sudt.calcMinCapacity(this.request.originalUserLock) + Lpt.calcMinCapacity(this.request.originalUserLock)
+    }
 
-  toCellOutput(): Array<CKBComponents.CellOutput> {
-    this.process()
 
-    return [this.outputLpt!.toCellOutput(), this.outputSudtOrCkb!.toCellOutput()]
-  }
+    private minCapacityForCkbChange(): bigint {
+        return Ckb.calcMinCapacity(this.request.originalUserLock) + Lpt.calcMinCapacity(this.request.originalUserLock)
+    }
 
-  toCellOutputData(): Array<string> {
-    this.process()
+    process(): void {
+        if (!this.processed) {
+            this.outputLpt = Lpt.from(this.lptAmount, this.request.originalUserLock)
+            if (this.sudtChangeAmount === 0n) {
+                // compose ckb
+                this.outputSudtOrCkb = Ckb.from(
+                    this.capacityChangeAmount - Lpt.calcMinCapacity(this.request.originalUserLock),
+                    this.request.originalUserLock,
+                )
+            } else {
+                // compose sudt
+                this.outputSudtOrCkb = Sudt.from(this.sudtChangeAmount, this.request.originalUserLock)
+            }
+        }
+        this.processed = true
+    }
 
-    return [this.outputLpt!.toCellOutputData(), this.outputSudtOrCkb!.toCellOutputData()]
-  }
+    toCellInput(): CKBComponents.CellInput {
+        return this.request.toCellInput()
+    }
+
+    toCellOutput(): Array<CKBComponents.CellOutput> {
+        this.process()
+
+        return [this.outputLpt!.toCellOutput(), this.outputSudtOrCkb!.toCellOutput()]
+    }
+
+    toCellOutputData(): Array<string> {
+        this.process()
+
+        return [this.outputLpt!.toCellOutputData(), this.outputSudtOrCkb!.toCellOutputData()]
+    }
 
 
 }

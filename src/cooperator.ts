@@ -1,11 +1,15 @@
 import {logger} from './cooperatorLogger'
 import {
     BLOCK_MINER_FEE,
-    CKB_NODE_URL, CKB_SUDT_INFO_LOCK_CODE_HASH,
+    CKB_NODE_URL,
+    CKB_SUDT_INFO_LOCK_CODE_HASH,
     CKB_SUDT_INFO_LOCK_HASH_TYPE,
     CKB_SUDT_INFO_LOCK_OUTPOINT_INDEX,
-    CKB_SUDT_INFO_LOCK_OUTPOINT_TX_HASH, CKB_SUDT_INFO_TYPE_CODE_HASH,
-    CKB_SUDT_INFO_TYPE_HASH_TYPE, CKB_SUDT_INFO_TYPE_OUTPOINT_INDEX, CKB_SUDT_INFO_TYPE_OUTPOINT_TX_HASH,
+    CKB_SUDT_INFO_LOCK_OUTPOINT_TX_HASH,
+    CKB_SUDT_INFO_TYPE_CODE_HASH,
+    CKB_SUDT_INFO_TYPE_HASH_TYPE,
+    CKB_SUDT_INFO_TYPE_OUTPOINT_INDEX,
+    CKB_SUDT_INFO_TYPE_OUTPOINT_TX_HASH,
     CKB_SUDT_LIQUIDITY_REQ_LOCK_ARGS_VERSION,
     CKB_SUDT_LIQUIDITY_REQ_LOCK_CODE_HASH,
     CKB_SUDT_LIQUIDITY_REQ_LOCK_HASH_TYPE,
@@ -14,7 +18,8 @@ import {
     CKB_SUDT_SWAP_REQ_LOCK_ARGS_VERSION,
     CKB_SUDT_SWAP_REQ_LOCK_CODE_HASH,
     CKB_SUDT_SWAP_REQ_LOCK_HASH_TYPE,
-    CKB_SUDT_SWAP_REQ_LOCK_SCRIPT_INDEX, CKB_SUDT_SWAP_REQ_LOCK_SCRIPT_TX_HASH,
+    CKB_SUDT_SWAP_REQ_LOCK_SCRIPT_INDEX,
+    CKB_SUDT_SWAP_REQ_LOCK_SCRIPT_TX_HASH,
     COOPERATOR_FROM_BLOCK,
     COOPERATOR_PRIVATE_KEY,
     DERIVE_RANDOM,
@@ -28,8 +33,10 @@ import {
     SECP256K1_CODE_HASH,
     SECP256K1_HASH_TYPE,
     SECP256K1_TX_HASH,
-    SECP256K1_TX_INDEX, SUDT_SUDT_INFO_LOCK_CODE_HASH,
-    SUDT_SUDT_INFO_LOCK_HASH_TYPE, SUDT_SUDT_INFO_LOCK_OUTPOINT_INDEX,
+    SECP256K1_TX_INDEX,
+    SUDT_SUDT_INFO_LOCK_CODE_HASH,
+    SUDT_SUDT_INFO_LOCK_HASH_TYPE,
+    SUDT_SUDT_INFO_LOCK_OUTPOINT_INDEX,
     SUDT_SUDT_INFO_LOCK_OUTPOINT_TX_HASH,
     SUDT_SUDT_INFO_TYPE_CODE_HASH,
     SUDT_SUDT_INFO_TYPE_HASH_TYPE,
@@ -42,7 +49,8 @@ import {
     SUDT_SUDT_LIQUIDITY_REQ_LOCK_SCRIPT_TX_HASH,
     SUDT_SUDT_SWAP_REQ_LOCK_ARGS_VERSION,
     SUDT_SUDT_SWAP_REQ_LOCK_CODE_HASH,
-    SUDT_SUDT_SWAP_REQ_LOCK_HASH_TYPE, SUDT_SUDT_SWAP_REQ_LOCK_SCRIPT_INDEX,
+    SUDT_SUDT_SWAP_REQ_LOCK_HASH_TYPE,
+    SUDT_SUDT_SWAP_REQ_LOCK_SCRIPT_INDEX,
     SUDT_SUDT_SWAP_REQ_LOCK_SCRIPT_TX_HASH,
     WORKER_TRANSFER_BALANCE
 } from './cooperatorEnv'
@@ -59,15 +67,15 @@ import JSONbig from "json-bigint";
 import Rpc from '@nervosnetwork/ckb-sdk-rpc'
 import knex from 'knex'
 
-type WorkType = Record<'xTypeArg' | 'xTypeHash' | 'xSymbol' | 'yTypeArg' | 'yTypeHash' | 'ySymbol'| 'fromBlock', string>
+type WorkType = Record<'xTypeArg' | 'xTypeHash' | 'xSymbol' | 'yTypeArg' | 'yTypeHash' | 'ySymbol' | 'fromBlock', string>
 
 export default class Cooperator {
     #ckb: CKB
     #client: Rpc
     #knex: knex
 
-    static CKB_TYPE_ARGS : string = '0x'
-    static CKB_TYPE_HASH : string = '0x0000000000000000000000000000000000000000000000000000000000000000'
+    static CKB_TYPE_ARGS: string = '0x'
+    static CKB_TYPE_HASH: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
     // @ts-ignore
     #mnemonic: string
     // @ts-ignore
@@ -119,14 +127,14 @@ export default class Cooperator {
                     let sudtYTypeArgs: string
                     let sudtYTypeHash = poolInfo['assets'][1]['typeHash']
                     let sudtYSymbol: string
-                    let infoCellTypeArgs : string
+                    let infoCellTypeArgs: string
                     let fromBlock: string
                     if (sudtXTypeHash === Cooperator.CKB_TYPE_HASH || sudtYTypeHash === Cooperator.CKB_TYPE_HASH) {
 
                         sudtXTypeArgs = Cooperator.CKB_TYPE_ARGS
                         sudtXSymbol = poolInfo['assets'][0]['symbol']
 
-                        if(sudtXSymbol !== 'CKB'){
+                        if (sudtXSymbol !== 'CKB') {
                             this.#error(`sudtXSymbol of native CKB from ${this.#poolUrl} is not literally 'CKB'`)
                         }
 
@@ -139,7 +147,7 @@ export default class Cooperator {
 
                         fromBlock = infoCell['blockNumber']
 
-                    }else{
+                    } else {
                         if (BigInt(sudtXTypeHash) < BigInt(sudtYTypeHash)) {
                             sudtXTypeArgs = poolInfo['assets'][0]['typeScript']['args']
                             sudtXSymbol = poolInfo['assets'][0]['symbol']
@@ -163,8 +171,11 @@ export default class Cooperator {
 
                     this.#info(`${sudtXSymbol}-${sudtYSymbol}: ${fromBlock}`)
 
+                    // for debug
+                    // if (sudtXSymbol !== 'CKB' || sudtYSymbol !== 'ckETH') {
+                    //     continue
+                    // }
 
-                    //don't forget to sort the sudt type hash
                     identities.set(infoCellTypeArgs, {
                         xTypeHash: sudtXTypeHash, yTypeHash: sudtYTypeHash,
                         xTypeArg: sudtXTypeArgs, xSymbol: sudtXSymbol,
@@ -226,8 +237,8 @@ export default class Cooperator {
 
     }
 
-    #fork = (privateKey: string, xTypeArgs: string, xSymbol: string, yTypeArgs: string, ySymbol: string, infoTypeArgs: string,fromBlock:string) => {
-        if(xTypeArgs === Cooperator.CKB_TYPE_ARGS){
+    #fork = (privateKey: string, xTypeArgs: string, xSymbol: string, yTypeArgs: string, ySymbol: string, infoTypeArgs: string, fromBlock: string) => {
+        if (xTypeArgs === Cooperator.CKB_TYPE_ARGS) {
             let env_work: any = {
                 'MATCHER_PRIVATE_KEY': privateKey,
                 'SUDT_TYPE_ARGS': yTypeArgs,
@@ -237,24 +248,24 @@ export default class Cooperator {
                 'LIQUIDITY_FROM_BLOCK': fromBlock,
                 'SWAP_FROM_BLOCK': fromBlock,
 
-                'INFO_TYPE_OUTPOINT_TX_HASH':CKB_SUDT_INFO_TYPE_OUTPOINT_TX_HASH,
-                'INFO_TYPE_OUTPOINT_INDEX':CKB_SUDT_INFO_TYPE_OUTPOINT_INDEX,
-                'INFO_TYPE_CODE_HASH':CKB_SUDT_INFO_TYPE_CODE_HASH,
-                'INFO_TYPE_HASH_TYPE':CKB_SUDT_INFO_TYPE_HASH_TYPE,
-                'INFO_LOCK_OUTPOINT_TX_HASH':CKB_SUDT_INFO_LOCK_OUTPOINT_TX_HASH,
-                'INFO_LOCK_OUTPOINT_INDEX':CKB_SUDT_INFO_LOCK_OUTPOINT_INDEX,
-                'INFO_LOCK_CODE_HASH':CKB_SUDT_INFO_LOCK_CODE_HASH,
-                'INFO_LOCK_HASH_TYPE':CKB_SUDT_INFO_LOCK_HASH_TYPE,
-                'LIQUIDITY_REQ_LOCK_SCRIPT_TX_HASH':CKB_SUDT_LIQUIDITY_REQ_LOCK_SCRIPT_TX_HASH,
-                'LIQUIDITY_REQ_LOCK_SCRIPT_INDEX':CKB_SUDT_LIQUIDITY_REQ_LOCK_SCRIPT_INDEX,
-                'LIQUIDITY_REQ_LOCK_CODE_HASH':CKB_SUDT_LIQUIDITY_REQ_LOCK_CODE_HASH,
-                'LIQUIDITY_REQ_LOCK_HASH_TYPE':CKB_SUDT_LIQUIDITY_REQ_LOCK_HASH_TYPE,
-                'LIQUIDITY_REQ_LOCK_ARGS_VERSION':CKB_SUDT_LIQUIDITY_REQ_LOCK_ARGS_VERSION,
-                'SWAP_REQ_LOCK_SCRIPT_TX_HASH':CKB_SUDT_SWAP_REQ_LOCK_SCRIPT_TX_HASH,
-                'SWAP_REQ_LOCK_SCRIPT_INDEX':CKB_SUDT_SWAP_REQ_LOCK_SCRIPT_INDEX,
-                'SWAP_REQ_LOCK_CODE_HASH':CKB_SUDT_SWAP_REQ_LOCK_CODE_HASH,
-                'SWAP_REQ_LOCK_HASH_TYPE':CKB_SUDT_SWAP_REQ_LOCK_HASH_TYPE,
-                'SWAP_REQ_LOCK_ARGS_VERSION':CKB_SUDT_SWAP_REQ_LOCK_ARGS_VERSION,
+                'INFO_TYPE_OUTPOINT_TX_HASH': CKB_SUDT_INFO_TYPE_OUTPOINT_TX_HASH,
+                'INFO_TYPE_OUTPOINT_INDEX': CKB_SUDT_INFO_TYPE_OUTPOINT_INDEX,
+                'INFO_TYPE_CODE_HASH': CKB_SUDT_INFO_TYPE_CODE_HASH,
+                'INFO_TYPE_HASH_TYPE': CKB_SUDT_INFO_TYPE_HASH_TYPE,
+                'INFO_LOCK_OUTPOINT_TX_HASH': CKB_SUDT_INFO_LOCK_OUTPOINT_TX_HASH,
+                'INFO_LOCK_OUTPOINT_INDEX': CKB_SUDT_INFO_LOCK_OUTPOINT_INDEX,
+                'INFO_LOCK_CODE_HASH': CKB_SUDT_INFO_LOCK_CODE_HASH,
+                'INFO_LOCK_HASH_TYPE': CKB_SUDT_INFO_LOCK_HASH_TYPE,
+                'LIQUIDITY_REQ_LOCK_SCRIPT_TX_HASH': CKB_SUDT_LIQUIDITY_REQ_LOCK_SCRIPT_TX_HASH,
+                'LIQUIDITY_REQ_LOCK_SCRIPT_INDEX': CKB_SUDT_LIQUIDITY_REQ_LOCK_SCRIPT_INDEX,
+                'LIQUIDITY_REQ_LOCK_CODE_HASH': CKB_SUDT_LIQUIDITY_REQ_LOCK_CODE_HASH,
+                'LIQUIDITY_REQ_LOCK_HASH_TYPE': CKB_SUDT_LIQUIDITY_REQ_LOCK_HASH_TYPE,
+                'LIQUIDITY_REQ_LOCK_ARGS_VERSION': CKB_SUDT_LIQUIDITY_REQ_LOCK_ARGS_VERSION,
+                'SWAP_REQ_LOCK_SCRIPT_TX_HASH': CKB_SUDT_SWAP_REQ_LOCK_SCRIPT_TX_HASH,
+                'SWAP_REQ_LOCK_SCRIPT_INDEX': CKB_SUDT_SWAP_REQ_LOCK_SCRIPT_INDEX,
+                'SWAP_REQ_LOCK_CODE_HASH': CKB_SUDT_SWAP_REQ_LOCK_CODE_HASH,
+                'SWAP_REQ_LOCK_HASH_TYPE': CKB_SUDT_SWAP_REQ_LOCK_HASH_TYPE,
+                'SWAP_REQ_LOCK_ARGS_VERSION': CKB_SUDT_SWAP_REQ_LOCK_ARGS_VERSION,
             }
             let file: string = path.join(__dirname, 'ckb2sudt/ckb2SudtWorker.ts')
             let env = process.env
@@ -262,7 +273,7 @@ export default class Cooperator {
             return fork(file, {
                 env: env
             })
-        }else{
+        } else {
             let env_work: any = {
                 'MATCHER_PRIVATE_KEY': privateKey,
                 'SUDT_X_TYPE_ARGS': xTypeArgs,
@@ -274,24 +285,24 @@ export default class Cooperator {
                 'LIQUIDITY_FROM_BLOCK': fromBlock,
                 'SWAP_FROM_BLOCK': fromBlock,
 
-                'INFO_TYPE_OUTPOINT_TX_HASH':SUDT_SUDT_INFO_TYPE_OUTPOINT_TX_HASH,
-                'INFO_TYPE_OUTPOINT_INDEX':SUDT_SUDT_INFO_TYPE_OUTPOINT_INDEX,
-                'INFO_TYPE_CODE_HASH':SUDT_SUDT_INFO_TYPE_CODE_HASH,
-                'INFO_TYPE_HASH_TYPE':SUDT_SUDT_INFO_TYPE_HASH_TYPE,
-                'INFO_LOCK_OUTPOINT_TX_HASH':SUDT_SUDT_INFO_LOCK_OUTPOINT_TX_HASH,
-                'INFO_LOCK_OUTPOINT_INDEX':SUDT_SUDT_INFO_LOCK_OUTPOINT_INDEX,
-                'INFO_LOCK_CODE_HASH':SUDT_SUDT_INFO_LOCK_CODE_HASH,
-                'INFO_LOCK_HASH_TYPE':SUDT_SUDT_INFO_LOCK_HASH_TYPE,
-                'LIQUIDITY_REQ_LOCK_SCRIPT_TX_HASH':SUDT_SUDT_LIQUIDITY_REQ_LOCK_SCRIPT_TX_HASH,
-                'LIQUIDITY_REQ_LOCK_SCRIPT_INDEX':SUDT_SUDT_LIQUIDITY_REQ_LOCK_SCRIPT_INDEX,
-                'LIQUIDITY_REQ_LOCK_CODE_HASH':SUDT_SUDT_LIQUIDITY_REQ_LOCK_CODE_HASH,
-                'LIQUIDITY_REQ_LOCK_HASH_TYPE':SUDT_SUDT_LIQUIDITY_REQ_LOCK_HASH_TYPE,
-                'LIQUIDITY_REQ_LOCK_ARGS_VERSION':SUDT_SUDT_LIQUIDITY_REQ_LOCK_ARGS_VERSION,
-                'SWAP_REQ_LOCK_SCRIPT_TX_HASH':SUDT_SUDT_SWAP_REQ_LOCK_SCRIPT_TX_HASH,
-                'SWAP_REQ_LOCK_SCRIPT_INDEX':SUDT_SUDT_SWAP_REQ_LOCK_SCRIPT_INDEX,
-                'SWAP_REQ_LOCK_CODE_HASH':SUDT_SUDT_SWAP_REQ_LOCK_CODE_HASH,
-                'SWAP_REQ_LOCK_HASH_TYPE':SUDT_SUDT_SWAP_REQ_LOCK_HASH_TYPE,
-                'SWAP_REQ_LOCK_ARGS_VERSION':SUDT_SUDT_SWAP_REQ_LOCK_ARGS_VERSION,
+                'INFO_TYPE_OUTPOINT_TX_HASH': SUDT_SUDT_INFO_TYPE_OUTPOINT_TX_HASH,
+                'INFO_TYPE_OUTPOINT_INDEX': SUDT_SUDT_INFO_TYPE_OUTPOINT_INDEX,
+                'INFO_TYPE_CODE_HASH': SUDT_SUDT_INFO_TYPE_CODE_HASH,
+                'INFO_TYPE_HASH_TYPE': SUDT_SUDT_INFO_TYPE_HASH_TYPE,
+                'INFO_LOCK_OUTPOINT_TX_HASH': SUDT_SUDT_INFO_LOCK_OUTPOINT_TX_HASH,
+                'INFO_LOCK_OUTPOINT_INDEX': SUDT_SUDT_INFO_LOCK_OUTPOINT_INDEX,
+                'INFO_LOCK_CODE_HASH': SUDT_SUDT_INFO_LOCK_CODE_HASH,
+                'INFO_LOCK_HASH_TYPE': SUDT_SUDT_INFO_LOCK_HASH_TYPE,
+                'LIQUIDITY_REQ_LOCK_SCRIPT_TX_HASH': SUDT_SUDT_LIQUIDITY_REQ_LOCK_SCRIPT_TX_HASH,
+                'LIQUIDITY_REQ_LOCK_SCRIPT_INDEX': SUDT_SUDT_LIQUIDITY_REQ_LOCK_SCRIPT_INDEX,
+                'LIQUIDITY_REQ_LOCK_CODE_HASH': SUDT_SUDT_LIQUIDITY_REQ_LOCK_CODE_HASH,
+                'LIQUIDITY_REQ_LOCK_HASH_TYPE': SUDT_SUDT_LIQUIDITY_REQ_LOCK_HASH_TYPE,
+                'LIQUIDITY_REQ_LOCK_ARGS_VERSION': SUDT_SUDT_LIQUIDITY_REQ_LOCK_ARGS_VERSION,
+                'SWAP_REQ_LOCK_SCRIPT_TX_HASH': SUDT_SUDT_SWAP_REQ_LOCK_SCRIPT_TX_HASH,
+                'SWAP_REQ_LOCK_SCRIPT_INDEX': SUDT_SUDT_SWAP_REQ_LOCK_SCRIPT_INDEX,
+                'SWAP_REQ_LOCK_CODE_HASH': SUDT_SUDT_SWAP_REQ_LOCK_CODE_HASH,
+                'SWAP_REQ_LOCK_HASH_TYPE': SUDT_SUDT_SWAP_REQ_LOCK_HASH_TYPE,
+                'SWAP_REQ_LOCK_ARGS_VERSION': SUDT_SUDT_SWAP_REQ_LOCK_ARGS_VERSION,
             }
             let file: string = path.join(__dirname, 'sudt2sudt/sudt2SudtWorker.ts')
             let env = process.env
@@ -347,12 +358,12 @@ export default class Cooperator {
         this.#info(`cooperator BLOCK_MINER_FEE ckb: ${BLOCK_MINER_FEE}`)
         let remain = capacity - WORKER_TRANSFER_BALANCE - BLOCK_MINER_FEE
         this.#info(`cooperator remaining ckb: ${remain}`)
-        if(remain < 0){
+        if (remain < 0) {
             this.#error(`not enough ckb of cooperator: ${remain}`)
             throw new Error(`not enough ckb of cooperator: ${remain}`)
         }
 
-        let workerLockScript : Script = {
+        let workerLockScript: Script = {
             code_hash: SECP256K1_CODE_HASH,
             hash_type: SECP256K1_HASH_TYPE,
             args: workerArgs
@@ -405,7 +416,7 @@ export default class Cooperator {
         try {
             const hash = await this.#client.sendTransaction(signedTx)
             this.#info('send ckb to worker: ' + workerArgs + ' txHash: ' + hash)
-            await waitTx(hash,this.#client)
+            await waitTx(hash, this.#client)
             this.#info('send ckb to worker: ' + workerArgs + ' txHash: ' + hash + ' done!')
         } catch (e) {
             this.#error('signedTx: ' + JSONbig.stringify(signedTx, null, 2))

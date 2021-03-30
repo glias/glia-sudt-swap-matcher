@@ -1,10 +1,11 @@
 import Cooperator from "./cooperator";
 
-export default class GliaSudtSwapMatcher{
+export default class GliaSudtSwapMatcher {
     constructor() {
 
     }
-    run = async () =>{
+
+    run = async () => {
         new Cooperator().run()
     }
 }

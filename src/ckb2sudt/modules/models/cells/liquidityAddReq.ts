@@ -1,5 +1,5 @@
-import type { Cell } from '@ckb-lumos/base'
-import { OutPoint } from '@ckb-lumos/base'
+import type {Cell} from '@ckb-lumos/base'
+import {OutPoint} from '@ckb-lumos/base'
 import {
   defaultOutPoint,
   defaultScript,
@@ -8,8 +8,8 @@ import {
   prepare0xPrefix,
   scriptHash,
 } from '../../../../tools'
-import { SUDT_TYPE_SCRIPT_HASH } from '../../../utils/workerEnv'
-import { CellInputType } from './interfaces/CellInputType'
+import {SUDT_TYPE_SCRIPT_HASH} from '../../../utils/workerEnv'
+import {CellInputType} from './interfaces/CellInputType'
 
 /*
 define LIQUIDITY_REQ_LOCK_CODE_HASH
@@ -31,133 +31,133 @@ lock: - 146 bytes
 
  */
 export class LiquidityAddReq implements CellInputType {
-  static LIQUIDITY_REMOVE_REQUEST_FIXED_CAPACITY = BigInt(235 * 10 ** 8)
+    static LIQUIDITY_REMOVE_REQUEST_FIXED_CAPACITY = BigInt(235 * 10 ** 8)
 
-  // given capacity for add, the ckb is in it, should be greater than LIQUIDITY_ADD_REQUEST_FIXED_CAPACITY
-  capacityAmount: bigint
-  // given sudt for add
-  sudtAmount: bigint
+    // given capacity for add, the ckb is in it, should be greater than LIQUIDITY_ADD_REQUEST_FIXED_CAPACITY
+    capacityAmount: bigint
+    // given sudt for add
+    sudtAmount: bigint
 
-  infoTypeHash: string
+    infoTypeHash: string
 
-  public userLockHash: string
+    public userLockHash: string
 
-  version: string
+    version: string
 
-  sudtMin: bigint
+    sudtMin: bigint
 
-  ckbMin: bigint
+    ckbMin: bigint
 
-  tips: bigint
-  tipsSudt: bigint
+    tips: bigint
+    tipsSudt: bigint
 
-  originalUserLock: CKBComponents.Script
+    originalUserLock: CKBComponents.Script
 
-  outPoint: OutPoint
+    outPoint: OutPoint
 
-  constructor(
-    capacityAmount: bigint,
-    sudtAmount: bigint,
-    infoTypeHash: string,
-    version: string,
-    sudtMin: bigint,
-    ckbMin: bigint,
-    userLockHash: string,
-    tips: bigint,
-    tipsSudt: bigint,
-    originalUserLock: CKBComponents.Script,
-    outPoint: OutPoint,
-  ) {
-    this.capacityAmount = capacityAmount
-    this.sudtAmount = sudtAmount
+    constructor(
+        capacityAmount: bigint,
+        sudtAmount: bigint,
+        infoTypeHash: string,
+        version: string,
+        sudtMin: bigint,
+        ckbMin: bigint,
+        userLockHash: string,
+        tips: bigint,
+        tipsSudt: bigint,
+        originalUserLock: CKBComponents.Script,
+        outPoint: OutPoint,
+    ) {
+        this.capacityAmount = capacityAmount
+        this.sudtAmount = sudtAmount
 
-    this.infoTypeHash = infoTypeHash
-    this.version = version
+        this.infoTypeHash = infoTypeHash
+        this.version = version
 
-    this.sudtMin = sudtMin
-    this.ckbMin = ckbMin
+        this.sudtMin = sudtMin
+        this.ckbMin = ckbMin
 
-    this.userLockHash = userLockHash
+        this.userLockHash = userLockHash
 
-    this.tips = tips
-    this.tipsSudt = tipsSudt
+        this.tips = tips
+        this.tipsSudt = tipsSudt
 
-    this.outPoint = outPoint
-    this.originalUserLock = originalUserLock
-  }
-
-  static fromCell(cell: Cell, script: CKBComponents.Script): LiquidityAddReq | null {
-    if (!LiquidityAddReq.validate(cell)) {
-      return null
+        this.outPoint = outPoint
+        this.originalUserLock = originalUserLock
     }
 
-    let capacityAmount = BigInt(cell.cell_output.capacity)
-    let sudtAmount = leHexToBigIntUint128(cell.data)
+    static fromCell(cell: Cell, script: CKBComponents.Script): LiquidityAddReq | null {
+        if (!LiquidityAddReq.validate(cell)) {
+            return null
+        }
 
-    const args = cell.cell_output.lock.args.substring(2)
-    let infoTypeHash = args.substring(0, 64)
+        let capacityAmount = BigInt(cell.cell_output.capacity)
+        let sudtAmount = leHexToBigIntUint128(cell.data)
 
-    let userLockHash = args.substring(64, 128)
+        const args = cell.cell_output.lock.args.substring(2)
+        let infoTypeHash = args.substring(0, 64)
 
-    let version = args.substring(128, 130)
+        let userLockHash = args.substring(64, 128)
 
-    let sudtMin = leHexToBigIntUint128(args.substring(130, 162))
-    let ckbMin = leHexToBigIntUint64(args.substring(162, 178))
+        let version = args.substring(128, 130)
 
-    let tips = leHexToBigIntUint64(args.substring(178, 194))
-    let tipsSudt = leHexToBigIntUint128(args.substring(194, 226))
+        let sudtMin = leHexToBigIntUint128(args.substring(130, 162))
+        let ckbMin = leHexToBigIntUint64(args.substring(162, 178))
 
-    let outPoint = cell.out_point!
+        let tips = leHexToBigIntUint64(args.substring(178, 194))
+        let tipsSudt = leHexToBigIntUint128(args.substring(194, 226))
 
-    return new LiquidityAddReq(
-      capacityAmount,
-      sudtAmount,
-      infoTypeHash,
-      version,
-      sudtMin,
-      ckbMin,
-      userLockHash,
-      tips,
-      tipsSudt,
-      script,
-      outPoint,
-    )
-  }
+        let outPoint = cell.out_point!
 
-  static default(): LiquidityAddReq {
-    return new LiquidityAddReq(0n, 0n, '', '', 0n, 0n, '', 0n, 0n, defaultScript(), defaultOutPoint())
-  }
-
-  static validate(cell: Cell) {
-    if (scriptHash(cell.cell_output.type!) != SUDT_TYPE_SCRIPT_HASH) {
-      return false
-    }
-    if (BigInt(cell.cell_output.capacity) < LiquidityAddReq.LIQUIDITY_REMOVE_REQUEST_FIXED_CAPACITY) {
-      return false
+        return new LiquidityAddReq(
+            capacityAmount,
+            sudtAmount,
+            infoTypeHash,
+            version,
+            sudtMin,
+            ckbMin,
+            userLockHash,
+            tips,
+            tipsSudt,
+            script,
+            outPoint,
+        )
     }
 
-    if (!cell.out_point) {
-      return false
+    static default(): LiquidityAddReq {
+        return new LiquidityAddReq(0n, 0n, '', '', 0n, 0n, '', 0n, 0n, defaultScript(), defaultOutPoint())
     }
 
-    return true
-  }
+    static validate(cell: Cell) {
+        if (scriptHash(cell.cell_output.type!) != SUDT_TYPE_SCRIPT_HASH) {
+            return false
+        }
+        if (BigInt(cell.cell_output.capacity) < LiquidityAddReq.LIQUIDITY_REMOVE_REQUEST_FIXED_CAPACITY) {
+            return false
+        }
 
-  static getUserLockHash(cell: Cell): string {
-    return prepare0xPrefix(cell.cell_output.lock.args.substring(2).substring(114, 178))
-  }
+        if (!cell.out_point) {
+            return false
+        }
 
-  toCellInput(): CKBComponents.CellInput {
-    return {
-      previousOutput: {
-        txHash: this.outPoint.tx_hash,
-        index: this.outPoint.index,
-      },
-      since: '0x0',
+        return true
     }
-  }
 
-  getOutPoint(): string {
-    return `${this.outPoint.tx_hash}-${this.outPoint.index}`
-  }
+    static getUserLockHash(cell: Cell): string {
+        return prepare0xPrefix(cell.cell_output.lock.args.substring(2).substring(64, 128))
+    }
+
+    toCellInput(): CKBComponents.CellInput {
+        return {
+            previousOutput: {
+                txHash: this.outPoint.tx_hash,
+                index: this.outPoint.index,
+            },
+            since: '0x0',
+        }
+    }
+
+    getOutPoint(): string {
+        return `${this.outPoint.tx_hash}-${this.outPoint.index}`
+    }
 }

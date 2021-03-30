@@ -1,4 +1,5 @@
 export interface CellOutputGenerator {
-  toCellOutput(): Array<CKBComponents.CellOutput>
-  toCellOutputData(): Array<string>
+    toCellOutput(): Array<CKBComponents.CellOutput>
+
+    toCellOutputData(): Array<string>
 }

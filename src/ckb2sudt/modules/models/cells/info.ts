@@ -1,4 +1,4 @@
-import { Cell, OutPoint } from '@ckb-lumos/base'
+import {Cell, OutPoint} from '@ckb-lumos/base'
 import {
   defaultOutPoint,
   leHexToBigIntUint128,
@@ -14,8 +14,9 @@ import {
   INFO_TYPE_SCRIPT_HASH,
   LPT_TYPE_SCRIPT_HASH,
 } from '../../../utils/workerEnv'
-import { CellOutputType } from './interfaces/CellOutputType'
-import { CellInputType } from './interfaces/CellInputType'
+import {CellOutputType} from './interfaces/CellOutputType'
+import {CellInputType} from './interfaces/CellInputType'
+
 /*
 define INFO_TYPE_CODE_HASH
 define INFO_LOCK_CODE_HASH
@@ -35,121 +36,121 @@ lock: - 97 bytes
     args: hash(ckb | asset_sudt_type_hash) 32 bytes | info_type_hash - 32 bytes
  */
 export class Info implements CellInputType, CellOutputType {
-  static INFO_FIXED_CAPACITY = BigInt(250 * 10 ** 8)
+    static INFO_FIXED_CAPACITY = BigInt(250 * 10 ** 8)
 
-  // this should be fixed
-  capacity: bigint /*= Info.INFO_IFXED_CAPACITY*/
+    // this should be fixed
+    capacity: bigint /*= Info.INFO_IFXED_CAPACITY*/
 
-  ckbReserve: bigint
-  sudtReserve: bigint
-  totalLiquidity: bigint
+    ckbReserve: bigint
+    sudtReserve: bigint
+    totalLiquidity: bigint
 
-  readonly ckbReserveOriginal: bigint
-  readonly sudtReserveOriginal: bigint
-  readonly totalLiquidityOriginal: bigint
+    readonly ckbReserveOriginal: bigint
+    readonly sudtReserveOriginal: bigint
+    readonly totalLiquidityOriginal: bigint
 
-  // keep the txHash to trace the Info cell
-  outPoint: OutPoint
+    // keep the txHash to trace the Info cell
+    outPoint: OutPoint
 
-  constructor(capacity: bigint, ckbReserve: bigint, sudtReserve: bigint, totalLiquidity: bigint, outPoint: OutPoint) {
-    this.capacity = capacity
+    constructor(capacity: bigint, ckbReserve: bigint, sudtReserve: bigint, totalLiquidity: bigint, outPoint: OutPoint) {
+        this.capacity = capacity
 
-    this.ckbReserve = ckbReserve
-    this.sudtReserve = sudtReserve
-    this.totalLiquidity = totalLiquidity
+        this.ckbReserve = ckbReserve
+        this.sudtReserve = sudtReserve
+        this.totalLiquidity = totalLiquidity
 
-    this.ckbReserveOriginal = ckbReserve
-    this.sudtReserveOriginal = sudtReserve
-    this.totalLiquidityOriginal = totalLiquidity
+        this.ckbReserveOriginal = ckbReserve
+        this.sudtReserveOriginal = sudtReserve
+        this.totalLiquidityOriginal = totalLiquidity
 
-    this.outPoint = outPoint
-  }
-
-  static validate(cell: Cell): boolean {
-    if (BigInt(cell.cell_output.capacity) !== Info.INFO_FIXED_CAPACITY) {
-      return false
+        this.outPoint = outPoint
     }
 
-    // for liquidity_sudt_type_hash field in data
-    if (cell.data.substring(2).substring(96, 160) !== remove0xPrefix(LPT_TYPE_SCRIPT_HASH)) {
-      return false
+    static validate(cell: Cell): boolean {
+        if (BigInt(cell.cell_output.capacity) !== Info.INFO_FIXED_CAPACITY) {
+            return false
+        }
+
+        // for liquidity_sudt_type_hash field in data
+        if (cell.data.substring(2).substring(96, 160) !== remove0xPrefix(LPT_TYPE_SCRIPT_HASH)) {
+            return false
+        }
+        if (scriptHash(cell.cell_output.type!) !== INFO_TYPE_SCRIPT_HASH) {
+            return false
+        }
+
+        if (scriptHash(cell.cell_output.lock) !== INFO_LOCK_SCRIPT_HASH) {
+            return false
+        }
+
+        if (!cell.out_point) {
+            return false
+        }
+
+        if (cell.cell_output.lock.args.substring(2).length != 128) {
+            return false
+        }
+
+        return true
     }
-    if (scriptHash(cell.cell_output.type!) !== INFO_TYPE_SCRIPT_HASH) {
-      return false
+
+    static fromCell(cell: Cell): Info | null {
+        if (!Info.validate(cell)) {
+            return null
+        }
+
+        const args = cell.data.substring(2)
+        let capacity = BigInt(cell.cell_output.capacity)
+
+        let ckbReserve = leHexToBigIntUint128(args.substring(0, 32))
+        let sudtReserve = leHexToBigIntUint128(args.substring(32, 64))
+        let totalLiquidity = leHexToBigIntUint128(args.substring(64, 96))
+
+        let outPoint = cell.out_point!
+
+        return new Info(capacity, ckbReserve, sudtReserve, totalLiquidity, outPoint)
     }
 
-    if (scriptHash(cell.cell_output.lock) !== INFO_LOCK_SCRIPT_HASH) {
-      return false
+    static default(): Info {
+        return new Info(0n, 0n, 0n, 0n, defaultOutPoint())
     }
 
-    if (!cell.out_point) {
-      return false
+    /*static cloneWith(info: Info, txHash: string, index: string): Info {
+      info = JSONbig.parse(JSONbig.stringify(info))
+      info.outPoint.tx_hash = txHash
+      info.outPoint.index = index
+      return info
+    }*/
+
+    toCellInput(): CKBComponents.CellInput {
+        return {
+            previousOutput: {
+                txHash: this.outPoint.tx_hash,
+                index: this.outPoint.index,
+            },
+            since: '0x0',
+        }
     }
 
-    if (cell.cell_output.lock.args.substring(2).length != 128) {
-      return false
+    toCellOutput(): CKBComponents.CellOutput {
+        return {
+            capacity: Uint64BigIntToHex(this.capacity),
+            type: INFO_TYPE_SCRIPT,
+            lock: INFO_LOCK_SCRIPT,
+        }
     }
 
-    return true
-  }
-
-  static fromCell(cell: Cell): Info | null {
-    if (!Info.validate(cell)) {
-      return null
+    toCellOutputData(): string {
+        return `${Uint128BigIntToLeHex(this.ckbReserve)}${remove0xPrefix(
+            Uint128BigIntToLeHex(this.sudtReserve),
+        )}${remove0xPrefix(Uint128BigIntToLeHex(this.totalLiquidity))}${remove0xPrefix(LPT_TYPE_SCRIPT_HASH)}`
     }
 
-    const args = cell.data.substring(2)
-    let capacity = BigInt(cell.cell_output.capacity)
-
-    let ckbReserve = leHexToBigIntUint128(args.substring(0, 32))
-    let sudtReserve = leHexToBigIntUint128(args.substring(32, 64))
-    let totalLiquidity = leHexToBigIntUint128(args.substring(64, 96))
-
-    let outPoint = cell.out_point!
-
-    return new Info(capacity, ckbReserve, sudtReserve, totalLiquidity, outPoint)
-  }
-
-  static default(): Info {
-    return new Info(0n, 0n, 0n, 0n, defaultOutPoint())
-  }
-
-  /*static cloneWith(info: Info, txHash: string, index: string): Info {
-    info = JSONbig.parse(JSONbig.stringify(info))
-    info.outPoint.tx_hash = txHash
-    info.outPoint.index = index
-    return info
-  }*/
-
-  toCellInput(): CKBComponents.CellInput {
-    return {
-      previousOutput: {
-        txHash: this.outPoint.tx_hash,
-        index: this.outPoint.index,
-      },
-      since: '0x0',
+    getOutPoint(): string {
+        return `${this.outPoint.tx_hash}-${this.outPoint.index}`
     }
-  }
 
-  toCellOutput(): CKBComponents.CellOutput {
-    return {
-      capacity: Uint64BigIntToHex(this.capacity),
-      type: INFO_TYPE_SCRIPT,
-      lock: INFO_LOCK_SCRIPT,
+    static fromJSON(source: Object): Info {
+        return Object.assign(Info.default(), source);
     }
-  }
-
-  toCellOutputData(): string {
-    return `${Uint128BigIntToLeHex(this.ckbReserve)}${remove0xPrefix(
-      Uint128BigIntToLeHex(this.sudtReserve),
-    )}${remove0xPrefix(Uint128BigIntToLeHex(this.totalLiquidity))}${remove0xPrefix(LPT_TYPE_SCRIPT_HASH)}`
-  }
-
-  getOutPoint(): string {
-    return `${this.outPoint.tx_hash}-${this.outPoint.index}`
-  }
-
-  static fromJSON(source: Object): Info {
-    return Object.assign(Info.default(), source);
-  }
 }

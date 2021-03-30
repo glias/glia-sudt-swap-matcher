@@ -1,12 +1,12 @@
 import 'dotenv/config'
-import { blake160, privateKeyToPublicKey, scriptToHash } from '@nervosnetwork/ckb-sdk-utils'
-import { HashType, QueryOptions } from '@ckb-lumos/base'
-import { ckbBlake2b, prepare0xPrefix, remove0xPrefix, scriptCamelToSnake } from '../../tools'
+import {blake160, privateKeyToPublicKey, scriptToHash} from '@nervosnetwork/ckb-sdk-utils'
+import {HashType, QueryOptions} from '@ckb-lumos/base'
+import {ckbBlake2b, prepare0xPrefix, remove0xPrefix, scriptCamelToSnake} from '../../tools'
 import {workerLogger} from './workerLogger'
 import JSONbig from 'json-bigint'
 
 function log(msg: string) {
-  workerLogger.info(`workEnv: ${msg}`)
+    workerLogger.info(`workEnv: ${msg}`)
 }
 
 const CKB_HEX: string = prepare0xPrefix(Buffer.from('ckb', 'utf-8').toString('hex'))
@@ -42,9 +42,9 @@ export const SUDT_TYPE_CODE_HASH = process.env.SUDT_TYPE_CODE_HASH!
 export const SUDT_TYPE_HASH_TYPE: HashType = process.env.SUDT_TYPE_HASH_TYPE === 'type' ? 'type' : 'data'
 export const SUDT_TYPE_ARGS = process.env.SUDT_TYPE_ARGS!
 export const SUDT_TYPE_SCRIPT: CKBComponents.Script = {
-  codeHash: SUDT_TYPE_CODE_HASH,
-  hashType: SUDT_TYPE_HASH_TYPE,
-  args: SUDT_TYPE_ARGS,
+    codeHash: SUDT_TYPE_CODE_HASH,
+    hashType: SUDT_TYPE_HASH_TYPE,
+    args: SUDT_TYPE_ARGS,
 }
 export const SUDT_TYPE_SCRIPT_HASH = scriptToHash(SUDT_TYPE_SCRIPT)
 log(`SUDT_TYPE_SCRIPT_HASH:${SUDT_TYPE_SCRIPT_HASH}`)
@@ -78,9 +78,9 @@ export const INFO_TYPE_CODE_HASH = process.env.INFO_TYPE_CODE_HASH!
 export const INFO_TYPE_HASH_TYPE: HashType = process.env.INFO_TYPE_HASH_TYPE === 'type' ? 'type' : 'data'
 export const INFO_TYPE_ARGS = process.env.INFO_TYPE_ARGS! // should be 32 bytes
 export const INFO_TYPE_SCRIPT: CKBComponents.Script = {
-  codeHash: INFO_TYPE_CODE_HASH,
-  hashType: INFO_TYPE_HASH_TYPE,
-  args: INFO_TYPE_ARGS,
+    codeHash: INFO_TYPE_CODE_HASH,
+    hashType: INFO_TYPE_HASH_TYPE,
+    args: INFO_TYPE_ARGS,
 }
 export const INFO_TYPE_SCRIPT_HASH = scriptToHash(INFO_TYPE_SCRIPT)
 log(`INFO_TYPE_SCRIPT_HASH:${INFO_TYPE_SCRIPT_HASH}`)
@@ -97,24 +97,24 @@ export const INFO_LOCK_ARGS = ckbBlake2b([CKB_HEX, SUDT_TYPE_SCRIPT_HASH]) + rem
 log('INFO_LOCK_ARGS: ' + INFO_LOCK_ARGS)
 
 export const INFO_LOCK_SCRIPT: CKBComponents.Script = {
-  codeHash: INFO_LOCK_CODE_HASH,
-  hashType: INFO_LOCK_HASH_TYPE,
-  args: INFO_LOCK_ARGS,
+    codeHash: INFO_LOCK_CODE_HASH,
+    hashType: INFO_LOCK_HASH_TYPE,
+    args: INFO_LOCK_ARGS,
 }
 export const INFO_LOCK_SCRIPT_HASH = scriptToHash(INFO_LOCK_SCRIPT)
 
 log('INFO_LOCK_SCRIPT_HASH: ' + INFO_LOCK_SCRIPT_HASH)
 
 export const INFO_QUERY_OPTION: QueryOptions = {
-  type: {
-    argsLen: 32,
-    script: scriptCamelToSnake(INFO_TYPE_SCRIPT),
-  },
-  lock: {
-    argsLen: 64,
-    script: scriptCamelToSnake(INFO_LOCK_SCRIPT),
-  },
-  fromBlock: INFO_FROM_BLOCK,
+    type: {
+        argsLen: 32,
+        script: scriptCamelToSnake(INFO_TYPE_SCRIPT),
+    },
+    lock: {
+        argsLen: 64,
+        script: scriptCamelToSnake(INFO_LOCK_SCRIPT),
+    },
+    fromBlock: INFO_FROM_BLOCK,
 }
 
 // pool
@@ -146,15 +146,15 @@ export const POOL_LOCK_HASH_TYPE = INFO_LOCK_HASH_TYPE
 export const POOL_LOCK_SCRIPT = INFO_LOCK_SCRIPT
 
 export const POOL_QUERY_OPTION: QueryOptions = {
-  type: {
-    argsLen: 32,
-    script: scriptCamelToSnake(POOL_TYPE_SCRIPT),
-  },
-  lock: {
-    argsLen: 64,
-    script: scriptCamelToSnake(POOL_LOCK_SCRIPT),
-  },
-  fromBlock: POOL_FROM_BLOCK,
+    type: {
+        argsLen: 32,
+        script: scriptCamelToSnake(POOL_TYPE_SCRIPT),
+    },
+    lock: {
+        argsLen: 64,
+        script: scriptCamelToSnake(POOL_LOCK_SCRIPT),
+    },
+    fromBlock: POOL_FROM_BLOCK,
 }
 
 // lpt script
@@ -173,9 +173,9 @@ export const LPT_TYPE_CODE_HASH = SUDT_TYPE_CODE_HASH
 export const LPT_TYPE_HASH_TYPE = SUDT_TYPE_HASH_TYPE
 export const LPT_TYPE_ARGS = INFO_LOCK_SCRIPT_HASH
 export const LPT_TYPE_SCRIPT: CKBComponents.Script = {
-  codeHash: LPT_TYPE_CODE_HASH,
-  hashType: LPT_TYPE_HASH_TYPE,
-  args: LPT_TYPE_ARGS,
+    codeHash: LPT_TYPE_CODE_HASH,
+    hashType: LPT_TYPE_HASH_TYPE,
+    args: LPT_TYPE_ARGS,
 }
 export const LPT_TYPE_SCRIPT_HASH = scriptToHash(LPT_TYPE_SCRIPT)
 
@@ -186,14 +186,14 @@ export const LIQUIDITY_REQ_LOCK_SCRIPT_INDEX = process.env.LIQUIDITY_REQ_LOCK_SC
 export const LIQUIDITY_REQ_LOCK_CODE_HASH = process.env.LIQUIDITY_REQ_LOCK_CODE_HASH!
 export const LIQUIDITY_REQ_LOCK_HASH_TYPE: HashType = process.env.LIQUIDITY_REQ_LOCK_HASH_TYPE === 'type' ? 'type' : 'data'
 export const LIQUIDITY_REQ_LOCK_ARGS_VERSION = process.env.LIQUIDITY_REQ_LOCK_ARGS_VERSION!
-export const LIQUIDITY_REQ_LOCK_ARGS = INFO_TYPE_SCRIPT_HASH + remove0xPrefix(LIQUIDITY_REQ_LOCK_ARGS_VERSION)
+export const LIQUIDITY_REQ_LOCK_ARGS = INFO_TYPE_SCRIPT_HASH
 
 log('LIQUIDITY_REQ_LOCK_ARGS: ' + LIQUIDITY_REQ_LOCK_ARGS)
 
 export const LIQUIDITY_REQ_LOCK_SCRIPT: CKBComponents.Script = {
-  codeHash: LIQUIDITY_REQ_LOCK_CODE_HASH,
-  hashType: LIQUIDITY_REQ_LOCK_HASH_TYPE,
-  args: LIQUIDITY_REQ_LOCK_ARGS,
+    codeHash: LIQUIDITY_REQ_LOCK_CODE_HASH,
+    hashType: LIQUIDITY_REQ_LOCK_HASH_TYPE,
+    args: LIQUIDITY_REQ_LOCK_ARGS,
 }
 
 // add req
@@ -207,27 +207,27 @@ data: - 16 bytes
 type: asset_sudt_type for add - 65 bytes
 lock: - 146 bytes
     code: LIQUIDITY_REQ_LOCK_CODE_HASH - 32 bytes + 1 byte
-    args: info_type_hash_32 (32 bytes, 0..32)
-    | version (u8, 1 byte, 32..33)
-    | sudtMin (u128, 16 bytes, 33..49)
-    | ckbMin (u64, 8 bytes, 49..57)
-    | user_lock_hash (32 bytes, 57..89)
-    | tips (8 bytes, 89..97)
-    | tips_sudt (16 bytes, 97..113)
+    args: info_type_hash_32 (32 bytes, 0..32) |
+          user_lock_hash (32 bytes, 32..64) |
+		  version (u8, 1 byte, 64..65) |
+		  sudtMin (u128, 16 bytes, 65..81) |
+		  ckbMin (u64, 8 bytes, 81..89) |
+		  tips (8 bytes, 89..97) |
+		  tips_sudt (16 bytes, 97..113)
  */
 export const LIQUIDITY_ADD_REQ_TYPE_SCRIPT = SUDT_TYPE_SCRIPT
 export const LIQUIDITY_ADD_REQ_TYPE_SCRIPT_HASH = SUDT_TYPE_SCRIPT_HASH
 
 export const LIQUIDITY_ADD_REQ_QUERY_OPTION: QueryOptions = {
-  type: {
-    argsLen: 32,
-    script: scriptCamelToSnake(LIQUIDITY_ADD_REQ_TYPE_SCRIPT),
-  },
-  lock: {
-    argsLen: 113,
-    script: scriptCamelToSnake(LIQUIDITY_REQ_LOCK_SCRIPT),
-  },
-  fromBlock: LIQUIDITY_FROM_BLOCK,
+    type: {
+        argsLen: 32,
+        script: scriptCamelToSnake(LIQUIDITY_ADD_REQ_TYPE_SCRIPT),
+    },
+    lock: {
+        argsLen: 113,
+        script: scriptCamelToSnake(LIQUIDITY_REQ_LOCK_SCRIPT),
+    },
+    fromBlock: LIQUIDITY_FROM_BLOCK,
 }
 
 // liquidity remove req
@@ -241,27 +241,27 @@ data: - 16 bytes
 type: liquidity_sudt_type for remove - 65 bytes
 lock: - 146 bytes
     code: LIQUIDITY_REQ_LOCK_CODE_HASH - 32 bytes + 1 byte
-    args: info_type_hash_32 (32 bytes, 0..32)
-    | version (u8, 1 byte, 32..33)
-    | sudtMin (u128, 16 bytes, 33..49)
-    | ckbMin (u64, 8 bytes, 49..57)
-    | user_lock_hash (32 bytes, 57..89)
-    | tips (8 bytes, 89..97)
-    | tips_sudt (16 bytes, 97..113)
+    args: info_type_hash_32 (32 bytes, 0..32) |
+		  user_lock_hash (32 bytes, 32..64) |
+		  version (u8, 1 byte, 64..65) |
+		  sudtMin (u128, 16 bytes, 65..81) |
+		  ckbMin (u64, 8 bytes, 81..89) |
+		  tips (8 bytes, 89..97) |
+		  tips_sudt (16 bytes, 97..113)
  */
 export const LIQUIDITY_REMOVE_REQ_TYPE_SCRIPT = LPT_TYPE_SCRIPT
 export const LIQUIDITY_REMOVE_REQ_TYPE_SCRIPT_HASH = LPT_TYPE_SCRIPT_HASH
 
 export const LIQUIDITY_REMOVE_REQ_QUERY_OPTION: QueryOptions = {
-  type: {
-    argsLen: 32,
-    script: scriptCamelToSnake(LIQUIDITY_REMOVE_REQ_TYPE_SCRIPT),
-  },
-  lock: {
-    argsLen: 113,
-    script: scriptCamelToSnake(LIQUIDITY_REQ_LOCK_SCRIPT),
-  },
-  fromBlock: LIQUIDITY_FROM_BLOCK,
+    type: {
+        argsLen: 32,
+        script: scriptCamelToSnake(LIQUIDITY_REMOVE_REQ_TYPE_SCRIPT),
+    },
+    lock: {
+        argsLen: 113,
+        script: scriptCamelToSnake(LIQUIDITY_REQ_LOCK_SCRIPT),
+    },
+    fromBlock: LIQUIDITY_FROM_BLOCK,
 }
 
 // swap
@@ -275,9 +275,9 @@ export const SWAP_REQ_LOCK_HASH_TYPE: HashType = process.env.SWAP_REQ_LOCK_HASH_
 export const SWAP_REQ_LOCK_ARGS_VERSION = process.env.SWAP_REQ_LOCK_ARGS_VERSION!
 
 export const SWAP_REQ_LOCK_SCRIPT: CKBComponents.Script = {
-  codeHash: SWAP_REQ_LOCK_CODE_HASH,
-  hashType: SWAP_REQ_LOCK_HASH_TYPE,
-  args: 'TBD', //138bytes
+    codeHash: SWAP_REQ_LOCK_CODE_HASH,
+    hashType: SWAP_REQ_LOCK_HASH_TYPE,
+    args: 'TBD', //138bytes
 }
 
 // buy
@@ -296,28 +296,28 @@ data: -  null for buy
 type: null for buy - 0 bytes
 lock: - 138 bytes
     code: SWAP_REQ_LOCK_CODE_HASH - 32 bytes + 1 byte
-    args: sudt_type_hash (32 bytes, 0..32)
-    | version (u8, 1 byte, 32..33)
-    | amountOutMin (u128, 16 bytes, 33..49)
-    | user_lock_hash (32 bytes, 49..81)
-    | tips (8 bytes, 81..89)
-    | tips_sudt (16 bytes, 89..105)
+    args: sudt_type_hash (32 bytes, 0..32) |
+		  user_lock_hash (32 bytes, 32..64) |
+		  version (u8, 1 byte, 64..65) |
+		  amountOutMin (u128, 16 bytes, 65..81) |
+		  tips (8 bytes, 81..89) |
+		  tips_sudt (16 bytes, 89..105)
  */
 export const SWAP_BUY_REQ_TYPE_SCRIPT = null
 export const SWAP_BUY_REQ_TYPE_SCRIPT_HASH = null
-export const SWAP_BUY_REQ_LOCK_ARG = SUDT_TYPE_SCRIPT_HASH + remove0xPrefix(SWAP_REQ_LOCK_ARGS_VERSION)
+export const SWAP_BUY_REQ_LOCK_ARG = SUDT_TYPE_SCRIPT_HASH
 log('SWAP_BUY_REQ_LOCK_ARG: ' + SWAP_BUY_REQ_LOCK_ARG)
 
 export const SWAP_BUY_REQ_LOCK_SCRIPT = SWAP_REQ_LOCK_SCRIPT
 SWAP_BUY_REQ_LOCK_SCRIPT.args = SWAP_BUY_REQ_LOCK_ARG
 
 export const SWAP_BUY_REQ_QUERY_OPTION: QueryOptions = {
-  type: 'empty',
-  lock: {
-    argsLen: 105,
-    script: scriptCamelToSnake(SWAP_BUY_REQ_LOCK_SCRIPT),
-  },
-  fromBlock: SWAP_FROM_BLOCK,
+    type: 'empty',
+    lock: {
+        argsLen: 105,
+        script: scriptCamelToSnake(SWAP_BUY_REQ_LOCK_SCRIPT),
+    },
+    fromBlock: SWAP_FROM_BLOCK,
 }
 
 // sell
@@ -337,33 +337,33 @@ data: - 16 bytes for sell
 type: sudt_type for sell - 65 bytes
 lock: - 138 bytes
     code: SWAP_REQ_LOCK_CODE_HASH - 32 bytes + 1 byte
-    args: sudt_type_hash (32 bytes, 0..32)
-    | version (u8, 1 byte, 32..33)
-    | amountOutMin (u128, 16 bytes, 33..49)
-    | user_lock_hash (32 bytes, 49..81)
-    | tips (8 bytes, 81..89)
-    | tips_sudt (16 bytes, 89..105)
+    args: sudt_type_hash (32 bytes, 0..32) |
+		  user_lock_hash (32 bytes, 32..64) |
+		  version (u8, 1 byte, 64..65) |
+		  amountOutMin (u128, 16 bytes, 65..81) |
+		  tips (8 bytes, 81..89) |
+		  tips_sudt (16 bytes, 89..105)
  */
 export const SWAP_SELL_REQ_TYPE_SCRIPT = SUDT_TYPE_SCRIPT
 export const SWAP_SELL_REQ_TYPE_SCRIPT_HASH = SUDT_TYPE_SCRIPT_HASH
 
 export const SWAP_SELL_REQ_LOCK_ARG =
-  '0x0000000000000000000000000000000000000000000000000000000000000000' + remove0xPrefix(SWAP_REQ_LOCK_ARGS_VERSION)
+    '0x0000000000000000000000000000000000000000000000000000000000000000'
 log('SWAP_SELL_REQ_LOCK_ARG: ' + SWAP_SELL_REQ_LOCK_ARG)
 
 export const SWAP_SELL_REQ_LOCK_SCRIPT = SWAP_REQ_LOCK_SCRIPT
 SWAP_SELL_REQ_LOCK_SCRIPT.args = SWAP_SELL_REQ_LOCK_ARG
 
 export const SWAP_SELL_REQ_QUERY_OPTION: QueryOptions = {
-  type: {
-    argsLen: 32,
-    script: scriptCamelToSnake(SWAP_SELL_REQ_TYPE_SCRIPT),
-  },
-  lock: {
-    argsLen: 105,
-    script: scriptCamelToSnake(SWAP_SELL_REQ_LOCK_SCRIPT),
-  },
-  fromBlock: SWAP_FROM_BLOCK,
+    type: {
+        argsLen: 32,
+        script: scriptCamelToSnake(SWAP_SELL_REQ_TYPE_SCRIPT),
+    },
+    lock: {
+        argsLen: 105,
+        script: scriptCamelToSnake(SWAP_SELL_REQ_LOCK_SCRIPT),
+    },
+    fromBlock: SWAP_FROM_BLOCK,
 }
 
 // secp256k1
@@ -382,85 +382,85 @@ export const MATCHER_ADDRESS = `0x${blake160(privateKeyToPublicKey(MATCHER_PRIVA
 log(`Secp256k1 args: MATCHER_PUBLIC_KEY_HASH:${MATCHER_ADDRESS}`)
 
 export const MATCHER_LOCK_SCRIPT: CKBComponents.Script = {
-  codeHash: SECP256K1_CODE_HASH,
-  hashType: SECP256K1_HASH_TYPE,
-  args: MATCHER_ADDRESS,
+    codeHash: SECP256K1_CODE_HASH,
+    hashType: SECP256K1_HASH_TYPE,
+    args: MATCHER_ADDRESS,
 }
 
 export const MATCHER_QUERY_OPTION: QueryOptions = {
-  type: 'empty',
-  lock: {
-    argsLen: 20,
-    script: scriptCamelToSnake(MATCHER_LOCK_SCRIPT),
-  },
+    type: 'empty',
+    lock: {
+        argsLen: 20,
+        script: scriptCamelToSnake(MATCHER_LOCK_SCRIPT),
+    },
 }
 
 export const INSTANCE_NAME: string = `ckb` + '-' + SUDT_SYMBOL
 log(`INSTANCE_NAME:${INSTANCE_NAME}`)
 
-log('INFO_QUERY_OPTION: ' + JSONbig.stringify(INFO_QUERY_OPTION,null,2))
-log('POOL_QUERY_OPTION: ' + JSONbig.stringify(POOL_QUERY_OPTION,null,2))
-log('LIQUIDITY_ADD_REQ_QUERY_OPTION: ' + JSONbig.stringify(LIQUIDITY_ADD_REQ_QUERY_OPTION,null,2))
-log('LIQUIDITY_REMOVE_REQ_QUERY_OPTION: ' + JSONbig.stringify(LIQUIDITY_REMOVE_REQ_QUERY_OPTION,null,2))
-log('SWAP_BUY_REQ_QUERY_OPTION: ' + JSONbig.stringify(SWAP_BUY_REQ_QUERY_OPTION,null,2))
-log('SWAP_SELL_REQ_QUERY_OPTION: ' + JSONbig.stringify(SWAP_SELL_REQ_QUERY_OPTION,null,2))
-log('MATCHER_QUERY_OPTION: ' + JSONbig.stringify(MATCHER_QUERY_OPTION,null,2))
+log('INFO_QUERY_OPTION: ' + JSONbig.stringify(INFO_QUERY_OPTION, null, 2))
+log('POOL_QUERY_OPTION: ' + JSONbig.stringify(POOL_QUERY_OPTION, null, 2))
+log('LIQUIDITY_ADD_REQ_QUERY_OPTION: ' + JSONbig.stringify(LIQUIDITY_ADD_REQ_QUERY_OPTION, null, 2))
+log('LIQUIDITY_REMOVE_REQ_QUERY_OPTION: ' + JSONbig.stringify(LIQUIDITY_REMOVE_REQ_QUERY_OPTION, null, 2))
+log('SWAP_BUY_REQ_QUERY_OPTION: ' + JSONbig.stringify(SWAP_BUY_REQ_QUERY_OPTION, null, 2))
+log('SWAP_SELL_REQ_QUERY_OPTION: ' + JSONbig.stringify(SWAP_SELL_REQ_QUERY_OPTION, null, 2))
+log('MATCHER_QUERY_OPTION: ' + JSONbig.stringify(MATCHER_QUERY_OPTION, null, 2))
 
 export const ALL_CELL_DEPS = [
-  {
-    outPoint: {
-      txHash: SUDT_TYPE_OUTPOINT_TX_HASH,
-      index: SUDT_TYPE_OUTPOINT_INDEX,
+    {
+        outPoint: {
+            txHash: SUDT_TYPE_OUTPOINT_TX_HASH,
+            index: SUDT_TYPE_OUTPOINT_INDEX,
+        },
+        depType: 'code' as CKBComponents.DepType,
     },
-    depType: 'code' as CKBComponents.DepType,
-  },
-  {
-    outPoint: {
-      txHash: INFO_TYPE_OUTPOINT_TX_HASH,
-      index: INFO_TYPE_OUTPOINT_INDEX,
+    {
+        outPoint: {
+            txHash: INFO_TYPE_OUTPOINT_TX_HASH,
+            index: INFO_TYPE_OUTPOINT_INDEX,
+        },
+        depType: 'code' as CKBComponents.DepType,
     },
-    depType: 'code' as CKBComponents.DepType,
-  },
-  {
-    outPoint: {
-      txHash: INFO_LOCK_OUTPOINT_TX_HASH,
-      index: INFO_LOCK_OUTPOINT_INDEX,
+    {
+        outPoint: {
+            txHash: INFO_LOCK_OUTPOINT_TX_HASH,
+            index: INFO_LOCK_OUTPOINT_INDEX,
+        },
+        depType: 'code' as CKBComponents.DepType,
     },
-    depType: 'code' as CKBComponents.DepType,
-  },
-  // {
-  //   outPoint: {
-  //     txHash: POOL_LOCK_OUTPOINT_TX_HASH,
-  //     index: POOL_LOCK_OUTPOINT_INDEX,
-  //   },
-  //   depType: 'code' as CKBComponents.DepType,
-  // },
-  // {
-  //   outPoint: {
-  //     txHash: POOL_TYPE_OUTPOINT_TX_HASH,
-  //     index: POOL_TYPE_OUTPOINT_INDEX,
-  //   },
-  //   depType: 'code' as CKBComponents.DepType,
-  // },
-  {
-    outPoint: {
-      txHash: LIQUIDITY_REQ_LOCK_SCRIPT_TX_HASH,
-      index: LIQUIDITY_REQ_LOCK_SCRIPT_INDEX,
+    // {
+    //   outPoint: {
+    //     txHash: POOL_LOCK_OUTPOINT_TX_HASH,
+    //     index: POOL_LOCK_OUTPOINT_INDEX,
+    //   },
+    //   depType: 'code' as CKBComponents.DepType,
+    // },
+    // {
+    //   outPoint: {
+    //     txHash: POOL_TYPE_OUTPOINT_TX_HASH,
+    //     index: POOL_TYPE_OUTPOINT_INDEX,
+    //   },
+    //   depType: 'code' as CKBComponents.DepType,
+    // },
+    {
+        outPoint: {
+            txHash: LIQUIDITY_REQ_LOCK_SCRIPT_TX_HASH,
+            index: LIQUIDITY_REQ_LOCK_SCRIPT_INDEX,
+        },
+        depType: 'code' as CKBComponents.DepType,
     },
-    depType: 'code' as CKBComponents.DepType,
-  },
-  {
-    outPoint: {
-      txHash: SWAP_REQ_LOCK_SCRIPT_TX_HASH,
-      index: SWAP_REQ_LOCK_SCRIPT_INDEX,
+    {
+        outPoint: {
+            txHash: SWAP_REQ_LOCK_SCRIPT_TX_HASH,
+            index: SWAP_REQ_LOCK_SCRIPT_INDEX,
+        },
+        depType: 'code' as CKBComponents.DepType,
     },
-    depType: 'code' as CKBComponents.DepType,
-  },
-  {
-    outPoint: {
-      txHash: SECP256K1_TX_HASH,
-      index: SECP256K1_TX_INDEX,
+    {
+        outPoint: {
+            txHash: SECP256K1_TX_HASH,
+            index: SECP256K1_TX_INDEX,
+        },
+        depType: 'depGroup' as CKBComponents.DepType,
     },
-    depType: 'depGroup' as CKBComponents.DepType,
-  },
 ]
