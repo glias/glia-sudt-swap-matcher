@@ -49,9 +49,7 @@ export default class RpcService {
             const witness = tx.transaction.witnesses[0]
             const lock = this.parseWitness(witness)
 
-            console.log(JSONbig.stringify(lock))
-            console.log(scriptToHash(lock))
-            console.log(lockScriptHash)
+            console.log(`finding script hash ${lockScriptHash}, recovered user lockscript (hash: ${scriptToHash(lock)}) from witness: ${JSONbig.stringify(lock)}`)
             if (scriptToHash(lock).toLowerCase() === lockScriptHash.toLowerCase()) {
                 this.#info(`find script of tx ${lockScriptHash} from witness`)
                 return lock

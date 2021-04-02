@@ -168,13 +168,14 @@ export default class Cooperator {
                         fromBlock = infoCell['blockNumber']
                     }
 
-
-                    this.#info(`${sudtXSymbol}-${sudtYSymbol}: ${fromBlock}`)
-
-                    // for debug
-                    // if (sudtXSymbol !== 'CKB' || sudtYSymbol !== 'ckETH') {
+                    //for debug
+                    // if ((sudtXSymbol !== 'ckUSDC' || sudtYSymbol !== 'ckETH')
+                    //     && (sudtXSymbol !== 'ckETH' || sudtYSymbol !== 'ckUSDC')) {
                     //     continue
                     // }
+
+                    //this.#info(`${sudtXSymbol}-${sudtYSymbol}: ${fromBlock}`)
+
 
                     identities.set(infoCellTypeArgs, {
                         xTypeHash: sudtXTypeHash, yTypeHash: sudtYTypeHash,
